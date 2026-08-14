@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Tarea — Español 3</title>
+<style>
+  :root {
+    --bg: #FAF6EF; --ink: #35322C; --muted: #7C7569; --card: #FFFFFF; --line: #E7E0D4;
+    --pret: #C75B41; --pret-soft: #F8E9E4; --imp: #23837A; --imp-soft: #E3F1EF;
+    --good: #34805B; --good-soft: #E4F0E9; --bad: #B5453A; --bad-soft: #F7E7E4;
+    --warn: #A8781E; --warn-soft: #F7EEDC;
+    --shadow: 0 1px 2px rgba(53,50,44,.07), 0 8px 22px rgba(53,50,44,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #211F1B; --ink: #EFEAE1; --muted: #A69D8F; --card: #2B2823; --line: #3C3830;
+      --pret: #E8836A; --pret-soft: #3B2923; --imp: #52B8AD; --imp-soft: #1F3431;
+      --good: #63B98B; --good-soft: #233529; --bad: #DE7F71; --bad-soft: #3B2724;
+      --warn: #D9A94E; --warn-soft: #3A3122;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #FAF6EF; --ink: #35322C; --muted: #7C7569; --card: #FFFFFF; --line: #E7E0D4;
+    --pret: #C75B41; --pret-soft: #F8E9E4; --imp: #23837A; --imp-soft: #E3F1EF;
+    --good: #34805B; --good-soft: #E4F0E9; --bad: #B5453A; --bad-soft: #F7E7E4;
+    --warn: #A8781E; --warn-soft: #F7EEDC;
+    --shadow: 0 1px 2px rgba(53,50,44,.07), 0 8px 22px rgba(53,50,44,.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #211F1B; --ink: #EFEAE1; --muted: #A69D8F; --card: #2B2823; --line: #3C3830;
+    --pret: #E8836A; --pret-soft: #3B2923; --imp: #52B8AD; --imp-soft: #1F3431;
+    --good: #63B98B; --good-soft: #233529; --bad: #DE7F71; --bad-soft: #3B2724;
+    --warn: #D9A94E; --warn-soft: #3A3122;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.28);
+  }
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink); margin: 0; padding: 1.3rem 1rem 3rem;
+    font-family: ui-rounded, "SF Pro Rounded", -apple-system, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55;
+  }
+  main { max-width: 640px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+  .eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin: 0 0 .3rem; }
+  h1 { font-size: 1.55rem; margin: 0; }
+  .sub { color: var(--muted); font-size: .92rem; margin: .3rem 0 0; }
+  .sub a { color: var(--imp); }
+  section { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow); padding: 1.2rem 1.1rem; }
+  h2 { font-size: 1.1rem; margin: 0 0 .3rem; }
+  .instr { color: var(--muted); font-size: .9rem; margin: 0 0 .9rem; }
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .92rem; }
+  th, td { text-align: left; padding: .3rem .4rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .7rem; text-transform: uppercase; letter-spacing: .08em; color: var(--muted); }
+  tr:last-child td { border-bottom: none; }
+  input.blank {
+    width: 6.2rem; max-width: 100%; border: 1.5px solid var(--line); border-radius: 8px;
+    background: var(--bg); color: var(--ink); font-family: inherit; font-size: .95rem;
+    padding: .3rem .45rem;
+  }
+  input.blank:focus { outline: 2px solid var(--imp); outline-offset: 1px; }
+  input.ok { border-color: var(--good); background: var(--good-soft); color: var(--good); font-weight: 700; }
+  input.almost { border-color: var(--warn); background: var(--warn-soft); color: var(--warn); font-weight: 700; }
+  input.no { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+  .given { font-weight: 800; }
+  .p2-item { margin-bottom: .7rem; font-size: .97rem; }
+  .pv { display: inline-flex; gap: .3rem; margin-left: .4rem; vertical-align: middle; }
+  .pv button {
+    border: 1.5px solid var(--line); background: var(--bg); border-radius: 8px; padding: .15rem .5rem;
+    font-family: inherit; font-size: .85rem; cursor: pointer; color: var(--ink);
+  }
+  .pv button.sel-ok { border-color: var(--good); background: var(--good-soft); color: var(--good); font-weight: 800; }
+  .pv button.sel-no { border-color: var(--bad); background: var(--bad-soft); color: var(--bad); }
+  .story { font-size: 1rem; line-height: 2.1; }
+  .story .verb { color: var(--muted); font-size: .82rem; }
+  .checkrow { display: flex; align-items: center; gap: .8rem; margin-top: 1rem; flex-wrap: wrap; }
+  .btn { border: none; border-radius: 10px; background: var(--ink); color: var(--bg); font-family: inherit; font-weight: 800; font-size: .95rem; padding: .6rem 1.2rem; cursor: pointer; }
+  .score { font-weight: 800; font-size: .95rem; min-height: 1.2rem; }
+  .score.good { color: var(--good); }
+  .legend { font-size: .8rem; color: var(--muted); margin-top: .5rem; }
+  .legend b.g { color: var(--good); } .legend b.w { color: var(--warn); } .legend b.b { color: var(--bad); }
+  ol { padding-left: 1.2rem; margin: 0; } ol li { margin-bottom: .4rem; font-size: .95rem; }
+  .free { width: 100%; min-height: 90px; border: 1.5px solid var(--line); border-radius: 10px; background: var(--bg); color: var(--ink); font-family: inherit; font-size: .95rem; padding: .6rem .7rem; resize: vertical; }
+  footer { text-align: center; color: var(--muted); font-size: .88rem; }
+  footer a { color: var(--imp); }
+</style>
+</head>
+<body>
+<main>
+  <header>
+    <p class="eyebrow">Español 3 · Señora Guzmán · Tarea</p>
+    <h1>La tarea de la semana</h1>
+    <p class="sub">Corrígete tú misma con los botones. Tu chuleta: <a href="repaso.html">la hoja de repaso</a>. Entrega: el jueves.</p>
+  </header>
+
+  <section id="p1">
+    <h2>Parte 1 — La familia completa</h2>
+    <p class="instr">Completa las cinco personas. Recuerda: la forma <b>yo</b> te da todo lo demás (tuve → tuv-iste, tuv-o, tuv-imos, tuv-ieron).</p>
+    <div class="tablewrap"><table id="t1">
+      <tr><th>verbo</th><th>yo</th><th>tú</th><th>él/ella</th><th>nosotros</th><th>ellos</th></tr>
+    </table></div>
+    <div class="checkrow"><button class="btn" id="check1">Corregir Parte 1</button><div class="score" id="score1"></div></div>
+    <p class="legend"><b class="g">verde</b> = perfecto · <b class="w">amarillo</b> = solo falta el acento u ortografía · <b class="b">rojo</b> = revisa la hoja e inténtalo otra vez</p>
+  </section>
+
+  <section id="p2">
+    <h2>Parte 2 — ¿Foto 📸 o video 🎬?</h2>
+    <p class="instr">La palabra clave te dice el tiempo. Escribe el verbo y elige 📸 (pretérito) o 🎬 (imperfecto).</p>
+    <div id="p2list"></div>
+    <div class="checkrow"><button class="btn" id="check2">Corregir Parte 2</button><div class="score" id="score2"></div></div>
+  </section>
+
+  <section id="p3">
+    <h2>Parte 3 — La historia con huecos</h2>
+    <p class="instr">Pretérito o imperfecto: las palabras clave deciden.</p>
+    <p class="story" id="story"></p>
+    <div class="checkrow"><button class="btn" id="check3">Corregir Parte 3</button><div class="score" id="score3"></div></div>
+  </section>
+
+  <section>
+    <h2>Parte 4 — Tu turno</h2>
+    <p class="instr">Escribe 6 frases sobre TU vida: 2 en presente, 2 en pretérito, 2 en imperfecto. Seis verbos diferentes. Esta parte la revisamos juntas el jueves.</p>
+    <textarea class="free" placeholder="1. ..."></textarea>
+  </section>
+
+  <section>
+    <h2>Parte 5 — El juego 🏆</h2>
+    <ol>
+      <li>Juega <a href="index.html">"Solo irregulares"</a> — meta: superar tu score de hoy.</li>
+      <li>Mándame screenshot de tu mejor ronda.</li>
+    </ol>
+  </section>
+
+  <section>
+    <h2>Parte 6 — Voice memo 🎤</h2>
+    <ol>
+      <li>Entrevista a alguien de tu casa: 5 preguntas en español (presente, pasado, y "cuando eras niño/a...").</li>
+      <li>Sus respuestas pueden ser en inglés. Mándame el audio por texto.</li>
+    </ol>
+  </section>
+
+  <footer><a href="index.html">← Volver a la práctica</a> · <a href="repaso.html">Hoja de repaso</a></footer>
+</main>
+
+<script>
+const strip = t => t.normalize("NFD").replace(/[̀-ͯ]/g, "");
+const clean = t => t.trim().toLowerCase();
+
+function grade(input, answer) {
+  const v = clean(input.value);
+  input.classList.remove("ok","almost","no");
+  if (!v) { input.classList.add("no"); return 0; }
+  if (v === answer) { input.classList.add("ok"); return 1; }
+  if (strip(v) === strip(answer)) { input.classList.add("almost"); input.title = "Casi: " + answer; return 0.5; }
+  input.classList.add("no"); return 0;
+}
+
+// ---- Parte 1 ----
+const P1 = [
+  // [label, forms yo..ellos, index of the given form]
+  ["hacer (pret.)", ["hice","hiciste","hizo","hicimos","hicieron"], 0],
+  ["tener (pret.)", ["tuve","tuviste","tuvo","tuvimos","tuvieron"], 1],
+  ["ir (pret.)", ["fui","fuiste","fue","fuimos","fueron"], 2],
+  ["decir (pret.)", ["dije","dijiste","dijo","dijimos","dijeron"], 3],
+  ["estar (pret.)", ["estuve","estuviste","estuvo","estuvimos","estuvieron"], 4],
+  ["ver (pret.)", ["vi","viste","vio","vimos","vieron"], 0],
+  ["dar (pret.)", ["di","diste","dio","dimos","dieron"], 1],
+  ["ser (imperf.)", ["era","eras","era","éramos","eran"], 2],
+  ["ir (imperf.)", ["iba","ibas","iba","íbamos","iban"], 0],
+  ["ver (imperf.)", ["veía","veías","veía","veíamos","veían"], 3],
+];
+const t1 = document.getElementById("t1");
+const p1inputs = [];
+P1.forEach(([label, forms, given]) => {
+  const tr = document.createElement("tr");
+  const td0 = document.createElement("td"); td0.textContent = label; tr.append(td0);
+  forms.forEach((f, i) => {
+    const td = document.createElement("td");
+    if (i === given) { td.textContent = f; td.className = "given"; }
+    else {
+      const inp = document.createElement("input");
+      inp.className = "blank"; inp.autocapitalize = "off"; inp.dataset.ans = f;
+      p1inputs.push(inp); td.append(inp);
+    }
+    tr.append(td);
+  });
+  t1.append(tr);
+});
+document.getElementById("check1").addEventListener("click", () => {
+  let pts = 0; p1inputs.forEach(i => pts += grade(i, i.dataset.ans));
+  const s = document.getElementById("score1");
+  s.textContent = `${Math.floor(pts)}/${p1inputs.length}` + (pts === p1inputs.length ? " — ¡perfecto! 🎉" : "");
+  s.className = "score" + (pts === p1inputs.length ? " good" : "");
+});
+
+// ---- Parte 2 ----
+const P2 = [
+  ["Ayer yo", "ir", "al centro comercial.", "fui", "P"],
+  ["Cuando era niña,", "ver", "dibujos animados todos los sábados.", "veía", "I"],
+  ["De repente, mi hermano", "decir", "la verdad.", "dijo", "P"],
+  ["Siempre nosotros", "tener", "un perro en casa.", "teníamos", "I"],
+  ["Una vez, mis amigos y yo", "hacer", "un viaje a Chicago.", "hicimos", "P"],
+  ["Mientras yo", "estar", "en clase, sonó mi teléfono.", "estaba", "I"],
+  ["El año pasado, tú", "dar", "el mejor regalo.", "diste", "P"],
+  ["Generalmente mi familia", "ir", "a la playa en julio.", "iba", "I"],
+];
+const p2list = document.getElementById("p2list");
+const p2items = [];
+P2.forEach(([pre, verb, post, ans, tense], n) => {
+  const div = document.createElement("div"); div.className = "p2-item";
+  div.append(`${n+1}. ${pre} `);
+  const inp = document.createElement("input");
+  inp.className = "blank"; inp.autocapitalize = "off"; inp.dataset.ans = ans;
+  div.append(inp, ` (${verb}) ${post}`);
+  const pv = document.createElement("span"); pv.className = "pv";
+  const state = { pick: null, inp, ans, tense, bP: null, bI: null };
+  const bP = document.createElement("button"); bP.textContent = "📸";
+  const bI = document.createElement("button"); bI.textContent = "🎬";
+  bP.addEventListener("click", () => { state.pick = "P"; bP.style.borderColor = "var(--ink)"; bI.style.borderColor = "var(--line)"; });
+  bI.addEventListener("click", () => { state.pick = "I"; bI.style.borderColor = "var(--ink)"; bP.style.borderColor = "var(--line)"; });
+  state.bP = bP; state.bI = bI;
+  pv.append(bP, bI); div.append(pv);
+  p2items.push(state); p2list.append(div);
+});
+document.getElementById("check2").addEventListener("click", () => {
+  let pts = 0;
+  p2items.forEach(st => {
+    pts += grade(st.inp, st.ans);
+    const right = st.tense === "P" ? st.bP : st.bI;
+    const wrong = st.tense === "P" ? st.bI : st.bP;
+    right.classList.remove("sel-no"); wrong.classList.remove("sel-ok");
+    if (st.pick === st.tense) { right.classList.add("sel-ok"); pts += 1; }
+    else if (st.pick) { wrong.classList.add("sel-no"); right.classList.add("sel-ok"); }
+    else { right.classList.add("sel-ok"); }
+  });
+  const max = p2items.length * 2;
+  const s = document.getElementById("score2");
+  s.textContent = `${Math.floor(pts)}/${max}` + (pts === max ? " — ¡perfecto! 🎉" : "");
+  s.className = "score" + (pts === max ? " good" : "");
+});
+
+// ---- Parte 3 ----
+const STORY = [
+  ["El verano pasado ", "ser", "fue"],
+  [" increíble. Todos los días yo ", "despertarse", "me despertaba"],
+  [" tarde y ", "ver", "veía"],
+  [" videos. Generalmente mis amigos y yo ", "ir", "íbamos"],
+  [" a la piscina. Pero un día, algo raro ", "pasar", "pasó"],
+  [": mi amiga me ", "decir", "dijo"],
+  [" un secreto. Yo no ", "poder", "pude"],
+  [" creerlo. Esa noche nosotros ", "hacer", "hicimos"],
+  [" una fiesta y yo ", "estar", "estuve"],
+  [" muy feliz.", null, null],
+];
+const story = document.getElementById("story");
+const p3inputs = [];
+STORY.forEach(([text, verb, ans]) => {
+  story.append(text);
+  if (verb) {
+    const inp = document.createElement("input");
+    inp.className = "blank"; inp.autocapitalize = "off"; inp.dataset.ans = ans;
+    if (ans.includes(" ")) inp.style.width = "9.5rem";
+    p3inputs.push(inp);
+    story.append(inp);
+    const v = document.createElement("span"); v.className = "verb"; v.textContent = ` (${verb}) `;
+    story.append(v);
+  }
+});
+document.getElementById("check3").addEventListener("click", () => {
+  let pts = 0;
+  p3inputs.forEach(i => {
+    // accept "estaba" for the last blank too
+    if (i.dataset.ans === "estuve" && clean(i.value) === "estaba") { i.classList.remove("almost","no"); i.classList.add("ok"); pts += 1; }
+    else pts += grade(i, i.dataset.ans);
+  });
+  const s = document.getElementById("score3");
+  s.textContent = `${Math.floor(pts)}/${p3inputs.length}` + (pts === p3inputs.length ? " — ¡perfecto! 🎉" : "");
+  s.className = "score" + (pts === p3inputs.length ? " good" : "");
+});
+</script>
+</body>
+</html>
