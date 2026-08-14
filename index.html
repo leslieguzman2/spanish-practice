@@ -1,0 +1,313 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Práctica de verbos — Español 3</title>
+</head>
+<body>
+
+<style>
+  :root {
+    --bg: #FAF6EF; --ink: #35322C; --muted: #7C7569; --card: #FFFFFF; --line: #E7E0D4;
+    --pret: #C75B41; --pret-soft: #F8E9E4;
+    --imp: #23837A; --imp-soft: #E3F1EF;
+    --pres: #7D68B5; --pres-soft: #EDE9F7;
+    --good: #34805B; --good-soft: #E4F0E9; --bad: #B5453A; --bad-soft: #F7E7E4;
+    --shadow: 0 1px 2px rgba(53,50,44,.07), 0 8px 22px rgba(53,50,44,.06);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #211F1B; --ink: #EFEAE1; --muted: #A69D8F; --card: #2B2823; --line: #3C3830;
+      --pret: #E8836A; --pret-soft: #3B2923; --imp: #52B8AD; --imp-soft: #1F3431;
+      --pres: #A995DB; --pres-soft: #312B42;
+      --good: #63B98B; --good-soft: #233529; --bad: #DE7F71; --bad-soft: #3B2724;
+      --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.28);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #FAF6EF; --ink: #35322C; --muted: #7C7569; --card: #FFFFFF; --line: #E7E0D4;
+    --pret: #C75B41; --pret-soft: #F8E9E4; --imp: #23837A; --imp-soft: #E3F1EF;
+    --pres: #7D68B5; --pres-soft: #EDE9F7;
+    --good: #34805B; --good-soft: #E4F0E9; --bad: #B5453A; --bad-soft: #F7E7E4;
+    --shadow: 0 1px 2px rgba(53,50,44,.07), 0 8px 22px rgba(53,50,44,.06);
+  }
+  :root[data-theme="dark"] {
+    --bg: #211F1B; --ink: #EFEAE1; --muted: #A69D8F; --card: #2B2823; --line: #3C3830;
+    --pret: #E8836A; --pret-soft: #3B2923; --imp: #52B8AD; --imp-soft: #1F3431;
+    --pres: #A995DB; --pres-soft: #312B42;
+    --good: #63B98B; --good-soft: #233529; --bad: #DE7F71; --bad-soft: #3B2724;
+    --shadow: 0 1px 2px rgba(0,0,0,.3), 0 8px 22px rgba(0,0,0,.28);
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: var(--bg); color: var(--ink); margin: 0; padding: 1.2rem 1rem 2.5rem;
+    font-family: ui-rounded, "SF Pro Rounded", -apple-system, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.5;
+  }
+  main { max-width: 480px; margin: 0 auto; }
+  header { margin-bottom: 1.1rem; }
+  .eyebrow { font-size: .7rem; font-weight: 700; letter-spacing: .13em; text-transform: uppercase; color: var(--muted); margin: 0 0 .3rem; }
+  h1 { font-size: 1.55rem; margin: 0; letter-spacing: -.01em; }
+  .sub { color: var(--muted); font-size: .92rem; margin: .3rem 0 0; }
+
+  .menu { display: flex; flex-direction: column; gap: .75rem; }
+  .mode-btn {
+    display: block; width: 100%; text-align: left; border: 1px solid var(--line); border-radius: 14px;
+    background: var(--card); box-shadow: var(--shadow); padding: 1rem 1.1rem; cursor: pointer;
+    font-family: inherit; color: var(--ink); font-size: 1rem;
+  }
+  .mode-btn:active { transform: scale(.985); }
+  .mode-btn .t { font-weight: 800; font-size: 1.06rem; display: block; margin-bottom: .15rem; }
+  .mode-btn .d { color: var(--muted); font-size: .88rem; }
+
+  .hud { display: flex; align-items: center; gap: .6rem; margin-bottom: .9rem; }
+  .hud .bar { flex: 1; height: 8px; border-radius: 99px; background: var(--line); overflow: hidden; }
+  .hud .fill { height: 100%; width: 0%; background: var(--pres); border-radius: 99px; transition: width .25s ease; }
+  .hud .streak { font-weight: 800; font-size: .95rem; min-width: 3.4rem; text-align: right; font-variant-numeric: tabular-nums; }
+  .hud .quit { border: none; background: none; color: var(--muted); font-size: 1.2rem; cursor: pointer; padding: .2rem .4rem; font-family: inherit; }
+
+  .stage {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: var(--shadow);
+    padding: 1.4rem 1.2rem; text-align: center; min-height: 300px;
+    display: flex; flex-direction: column; justify-content: center; gap: 1rem;
+  }
+  .prompt-label { font-size: .72rem; font-weight: 700; letter-spacing: .11em; text-transform: uppercase; color: var(--muted); }
+  .prompt { font-size: 1.5rem; font-weight: 800; line-height: 1.25; text-wrap: balance; }
+  .hint { display: block; font-size: .95rem; font-weight: 500; color: var(--muted); margin-top: .4rem; }
+  .tense-tag { display: inline-block; font-size: .75rem; font-weight: 800; letter-spacing: .08em; text-transform: uppercase; border-radius: 999px; padding: .25rem .75rem; }
+  .tense-tag.pret { background: var(--pret-soft); color: var(--pret); }
+  .tense-tag.imp { background: var(--imp-soft); color: var(--imp); }
+  .tense-tag.pres { background: var(--pres-soft); color: var(--pres); }
+
+  .choices { display: flex; flex-direction: column; gap: .55rem; }
+  .choices.two { flex-direction: row; }
+  .choices.two .choice { flex: 1; padding: 1.1rem .5rem; font-size: 1.02rem; }
+  .choice {
+    border: 1.5px solid var(--line); border-radius: 12px; background: var(--bg); color: var(--ink);
+    font-family: inherit; font-size: 1.05rem; font-weight: 600; padding: .75rem .8rem; cursor: pointer;
+  }
+  .choice:active { transform: scale(.98); }
+  .choice.correct { background: var(--good-soft); border-color: var(--good); color: var(--good); }
+  .choice.wrong { background: var(--bad-soft); border-color: var(--bad); color: var(--bad); }
+  .choice:disabled { cursor: default; }
+
+  .feedback { min-height: 1.4rem; font-weight: 700; font-size: .95rem; }
+  .feedback.good { color: var(--good); }
+  .feedback.bad { color: var(--bad); }
+
+  .summary { text-align: center; display: flex; flex-direction: column; gap: .8rem; align-items: center; }
+  .big-score { font-size: 3rem; font-weight: 800; line-height: 1; font-variant-numeric: tabular-nums; }
+  .msg { font-size: 1.05rem; max-width: 30ch; text-wrap: balance; }
+  .summary .sub { color: var(--muted); font-size: .9rem; }
+  .btn-primary {
+    border: none; border-radius: 12px; background: var(--ink); color: var(--bg); font-family: inherit;
+    font-weight: 800; font-size: 1rem; padding: .8rem 1.6rem; cursor: pointer;
+  }
+  .btn-ghost { border: none; background: none; color: var(--muted); font-family: inherit; font-size: .92rem; cursor: pointer; text-decoration: underline; }
+  .hidden { display: none; }
+  @media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">Español 3 · Señora Guzmán</p>
+    <h1>Práctica de verbos</h1>
+    <p class="sub">Presente, pretérito e imperfecto. Rondas cortas, sin nota.</p>
+  </header>
+
+  <div id="menu" class="menu">
+    <button class="mode-btn" id="m-signal">
+      <span class="t">¿Foto o video?</span>
+      <span class="d">Sale una palabra de tiempo, eliges el tiempo verbal. 10 rondas.</span>
+    </button>
+    <button class="mode-btn" id="m-conj">
+      <span class="t">Conjuga</span>
+      <span class="d">Verbo, persona y tiempo. Elige la forma correcta. 12 rondas.</span>
+    </button>
+    <button class="mode-btn" id="m-irreg">
+      <span class="t">Solo irregulares</span>
+      <span class="d">fui, hice, dije, era, iba... los que más salen en los exámenes. 10 rondas.</span>
+    </button>
+  </div>
+
+  <div id="game" class="hidden">
+    <div class="hud">
+      <button class="quit" id="quit" aria-label="Salir">✕</button>
+      <div class="bar"><div class="fill" id="fill"></div></div>
+      <div class="streak" id="streak">Racha 0</div>
+    </div>
+    <div class="stage" id="stage"></div>
+  </div>
+  <p style="text-align:center;margin-top:1.2rem;font-size:.9rem;"><a href="repaso.html" style="color:var(--muted);">Ver la hoja de repaso →</a></p>
+</main>
+
+<script>
+// Data — all forms checked by hand.
+const SIGNALS = [
+  ["ayer", "pret", "yesterday"],
+  ["siempre", "imp", "always"],
+  ["de repente", "pret", "suddenly"],
+  ["todos los días", "imp", "every day"],
+  ["anoche", "pret", "last night"],
+  ["cuando era niña", "imp", "when I was little"],
+  ["una vez", "pret", "one time"],
+  ["mientras", "imp", "while"],
+  ["el año pasado", "pret", "last year"],
+  ["generalmente", "imp", "usually"],
+  ["de niña", "imp", "as a kid"],
+  ["primero... luego...", "pret", "first... then..."],
+];
+const REGULARS = [
+  ["hablar", "yo", "pret", "hablé", "hablaba", "hablo"],
+  ["comer", "yo", "pret", "comí", "comía", "como"],
+  ["vivir", "ella", "pret", "vivió", "vivía", "vive"],
+  ["hablar", "ella", "imp", "hablaba", "habló", "habla"],
+  ["comer", "yo", "imp", "comía", "comí", "como"],
+  ["vivir", "yo", "imp", "vivía", "viví", "vivo"],
+  ["hablar", "ellos", "pret", "hablaron", "hablaban", "hablan"],
+  ["comer", "ellos", "imp", "comían", "comieron", "comen"],
+  ["estudiar", "yo", "pret", "estudié", "estudiaba", "estudio"],
+  ["escuchar", "ella", "imp", "escuchaba", "escuchó", "escucha"],
+  ["escribir", "yo", "pret", "escribí", "escribía", "escribo"],
+  ["bailar", "ellos", "pret", "bailaron", "bailaban", "bailan"],
+  ["correr", "ella", "pret", "corrió", "corría", "corre"],
+  ["nadar", "yo", "imp", "nadaba", "nadé", "nado"],
+  ["cantar", "tú", "pret", "cantaste", "cantabas", "cantas"],
+  ["aprender", "tú", "imp", "aprendías", "aprendiste", "aprendes"],
+];
+const IRREGULARS = [
+  ["ir", "yo", "pret", "fui", "iba", "voy"],
+  ["ir", "ella", "pret", "fue", "iba", "va"],
+  ["hacer", "yo", "pret", "hice", "hacía", "hago"],
+  ["hacer", "ella", "pret", "hizo", "hacía", "hace"],
+  ["decir", "yo", "pret", "dije", "decía", "digo"],
+  ["ser", "yo", "imp", "era", "fui", "soy"],
+  ["ir", "yo", "imp", "iba", "fui", "voy"],
+  ["ver", "ella", "imp", "veía", "vio", "ve"],
+  ["tener", "yo", "pret", "tuve", "tenía", "tengo"],
+  ["estar", "ella", "pret", "estuvo", "estaba", "está"],
+  ["ver", "yo", "pret", "vi", "veía", "veo"],
+  ["dar", "ella", "pret", "dio", "daba", "da"],
+  ["dormir", "él", "pret", "durmió", "dormía", "duerme"],
+  ["tener", "tú", "imp", "tenías", "tuviste", "tienes"],
+];
+const TENSE_LABEL = { pret: "pretérito", imp: "imperfecto", pres: "presente" };
+
+let mode, deck, idx, score, streak, best, total;
+const $ = id => document.getElementById(id);
+const el = (tag, cls, text) => {
+  const n = document.createElement(tag);
+  if (cls) n.className = cls;
+  if (text !== undefined) n.textContent = text;
+  return n;
+};
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+
+function start(m) {
+  mode = m;
+  if (m === "signal") deck = shuffle(SIGNALS).slice(0, 10);
+  else if (m === "conj") deck = shuffle(REGULARS.concat(shuffle(IRREGULARS).slice(0, 4))).slice(0, 12);
+  else deck = shuffle(IRREGULARS).slice(0, 10);
+  total = deck.length; idx = 0; score = 0; streak = 0; best = 0;
+  $("menu").classList.add("hidden"); $("game").classList.remove("hidden");
+  next();
+}
+function quitGame() { $("game").classList.add("hidden"); $("menu").classList.remove("hidden"); }
+$("quit").addEventListener("click", quitGame);
+$("m-signal").addEventListener("click", () => start("signal"));
+$("m-conj").addEventListener("click", () => start("conj"));
+$("m-irreg").addEventListener("click", () => start("irreg"));
+
+function hud() {
+  $("fill").style.width = (idx / total * 100) + "%";
+  $("streak").textContent = "Racha " + streak;
+}
+
+function next() {
+  hud();
+  if (idx >= total) return summary();
+  const stage = $("stage");
+  stage.replaceChildren();
+  const fb = el("div", "feedback");
+  fb.id = "fb";
+
+  if (mode === "signal") {
+    const [word, ans, en] = deck[idx];
+    stage.append(el("div", "prompt-label", `Palabra ${idx + 1} de ${total}`));
+    const prompt = el("div", "prompt", word);
+    prompt.append(el("span", "hint", en));
+    stage.append(prompt);
+    const row = el("div", "choices two");
+    [["pret", "📸 Pretérito"], ["imp", "🎬 Imperfecto"]].forEach(([v, label]) => {
+      const b = el("button", "choice", label);
+      b.addEventListener("click", () => mark(b, v === ans, ans === "pret" ? "📸 Pretérito" : "🎬 Imperfecto"));
+      row.append(b);
+    });
+    stage.append(row, fb);
+  } else {
+    const [verb, person, tense, correct, d1, d2] = deck[idx];
+    stage.append(el("div", "prompt-label", `Verbo ${idx + 1} de ${total}`));
+    const prompt = el("div", "prompt", verb);
+    const hint = el("span", "hint", person + " · ");
+    const tag = el("span", "tense-tag " + tense, TENSE_LABEL[tense]);
+    hint.append(tag);
+    prompt.append(hint);
+    stage.append(prompt);
+    const col = el("div", "choices");
+    shuffle([correct, d1, d2]).forEach(opt => {
+      const b = el("button", "choice", opt);
+      b.addEventListener("click", () => mark(b, opt === correct, correct));
+      col.append(b);
+    });
+    stage.append(col, fb);
+  }
+}
+
+function mark(btn, ok, correctText) {
+  document.querySelectorAll(".choice").forEach(b => b.disabled = true);
+  const fb = $("fb");
+  if (ok) {
+    btn.classList.add("correct");
+    score++; streak++; best = Math.max(best, streak);
+    fb.textContent = streak >= 3 ? `Racha de ${streak}, sigue así` : "Correcto";
+    fb.className = "feedback good";
+  } else {
+    btn.classList.add("wrong");
+    streak = 0;
+    document.querySelectorAll(".choice").forEach(b => {
+      if (b.textContent === correctText) b.classList.add("correct");
+    });
+    fb.textContent = "Casi. Mira la respuesta.";
+    fb.className = "feedback bad";
+  }
+  hud();
+  idx++;
+  setTimeout(next, ok ? 700 : 1600);
+}
+
+function summary() {
+  $("fill").style.width = "100%";
+  const pct = score / total;
+  let msg;
+  if (pct === 1) msg = "Perfecto. Ronda limpia.";
+  else if (pct >= .8) msg = "Muy bien. Repasa los que fallaste y repite la ronda.";
+  else if (pct >= .5) msg = "Buen comienzo. La segunda ronda siempre sale mejor.";
+  else msg = "Ronda de calentamiento. Repite ahora y compara.";
+  const stage = $("stage");
+  stage.replaceChildren();
+  const box = el("div", "summary");
+  box.append(el("div", "big-score", `${score}/${total}`));
+  box.append(el("div", "msg", msg));
+  box.append(el("div", "sub", `Mejor racha: ${best}`));
+  const again = el("button", "btn-primary", "Otra ronda");
+  again.addEventListener("click", () => start(mode));
+  const back = el("button", "btn-ghost", "Cambiar de juego");
+  back.addEventListener("click", quitGame);
+  box.append(again, back);
+  stage.append(box);
+}
+</script>
+
+</body>
+</html>

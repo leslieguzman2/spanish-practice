@@ -1,0 +1,275 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Brinkley's Spanish 3 Cheat Sheet</title>
+</head>
+<body>
+
+<style>
+  :root {
+    --bg: #FBF7F0;
+    --ink: #33302B;
+    --muted: #7A7368;
+    --card: #FFFFFF;
+    --line: #E8E1D5;
+    --photo: #D9583B;      /* pretérito — camera-flash coral */
+    --photo-soft: #FBEAE4;
+    --video: #1F8A80;      /* imperfecto — film teal */
+    --video-soft: #E2F2F0;
+    --present: #8A6FC8;    /* presente — violet */
+    --present-soft: #EFEAF9;
+    --shadow: 0 1px 3px rgba(51,48,43,.07), 0 8px 24px rgba(51,48,43,.05);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #201E1A;
+      --ink: #F0EBE2;
+      --muted: #A79E90;
+      --card: #2A2722;
+      --line: #3B372F;
+      --photo: #F07B5C;
+      --photo-soft: #3C2A24;
+      --video: #4FC2B6;
+      --video-soft: #1F3532;
+      --present: #B29DE8;
+      --present-soft: #322B44;
+      --shadow: 0 1px 3px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+    }
+  }
+  :root[data-theme="light"] {
+    --bg: #FBF7F0; --ink: #33302B; --muted: #7A7368; --card: #FFFFFF; --line: #E8E1D5;
+    --photo: #D9583B; --photo-soft: #FBEAE4; --video: #1F8A80; --video-soft: #E2F2F0;
+    --present: #8A6FC8; --present-soft: #EFEAF9;
+    --shadow: 0 1px 3px rgba(51,48,43,.07), 0 8px 24px rgba(51,48,43,.05);
+  }
+  :root[data-theme="dark"] {
+    --bg: #201E1A; --ink: #F0EBE2; --muted: #A79E90; --card: #2A2722; --line: #3B372F;
+    --photo: #F07B5C; --photo-soft: #3C2A24; --video: #4FC2B6; --video-soft: #1F3532;
+    --present: #B29DE8; --present-soft: #322B44;
+    --shadow: 0 1px 3px rgba(0,0,0,.3), 0 8px 24px rgba(0,0,0,.25);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    background: var(--bg); color: var(--ink);
+    font-family: ui-rounded, "SF Pro Rounded", -apple-system, "Segoe UI", system-ui, sans-serif;
+    line-height: 1.55; margin: 0; padding: 1.5rem 1rem 2rem;
+  }
+  main { max-width: 680px; margin: 0 auto; display: flex; flex-direction: column; gap: 1rem; }
+
+  header { text-align: left; padding: 0 .25rem 0.5rem; }
+  .eyebrow {
+    font-size: .72rem; font-weight: 700; letter-spacing: .14em; text-transform: uppercase;
+    color: var(--muted); margin: 0 0 .5rem;
+  }
+  h1 {
+    font-size: clamp(1.9rem, 5.5vw, 2.6rem); line-height: 1.1; margin: 0 0 .6rem;
+    letter-spacing: -.01em; text-wrap: balance;
+  }
+  .tagline { color: var(--muted); margin: 0; font-size: 1rem; }
+
+  section {
+    background: var(--card); border: 1px solid var(--line); border-radius: 16px;
+    box-shadow: var(--shadow); padding: 1.1rem 1.1rem;
+  }
+  h2 { font-size: 1.15rem; margin: 0 0 1rem; letter-spacing: -.005em; }
+  h2 .chip {
+    display: inline-block; font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+    text-transform: uppercase; border-radius: 999px; padding: .18rem .6rem; margin-right: .5rem;
+    vertical-align: 2px;
+  }
+  .chip.photo { background: var(--photo-soft); color: var(--photo); }
+  .chip.video { background: var(--video-soft); color: var(--video); }
+  .chip.present { background: var(--present-soft); color: var(--present); }
+
+  /* Big rule cards */
+  .rule-pair { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+  @media (max-width: 540px) { .rule-pair { grid-template-columns: 1fr; } }
+  .rule {
+    border-radius: 12px; padding: 1.1rem 1rem;
+  }
+  .rule.photo { background: var(--photo-soft); }
+  .rule.video { background: var(--video-soft); }
+  .rule .big { font-size: 1.6rem; display: block; margin-bottom: .2rem; }
+  .rule h3 { margin: 0 0 .3rem; font-size: 1.05rem; }
+  .rule.photo h3 { color: var(--photo); }
+  .rule.video h3 { color: var(--video); }
+  .rule p { margin: .25rem 0; font-size: .92rem; }
+  .rule .ex { font-style: italic; }
+  .rule .ex b { font-style: normal; }
+
+  /* Signal words */
+  .signals { display: grid; grid-template-columns: 1fr 1fr; gap: .9rem; }
+  @media (max-width: 540px) { .signals { grid-template-columns: 1fr; } }
+  .signals ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+  .signals li {
+    font-size: .92rem; padding: .4rem .7rem; border-radius: 8px; background: var(--bg);
+  }
+  .signals li span { color: var(--muted); font-size: .82rem; }
+  .signals .col-label { font-weight: 700; font-size: .85rem; margin-bottom: .5rem; }
+  .signals .photo-col .col-label { color: var(--photo); }
+  .signals .video-col .col-label { color: var(--video); }
+
+  /* Tables */
+  .tablewrap { overflow-x: auto; }
+  table { border-collapse: collapse; width: 100%; font-size: .95rem; }
+  th, td { text-align: left; padding: .32rem .6rem; border-bottom: 1px solid var(--line); }
+  th { font-size: .72rem; text-transform: uppercase; letter-spacing: .09em; color: var(--muted); font-weight: 700; }
+  td b { font-weight: 800; }
+  tr:last-child td { border-bottom: none; }
+  .accent-photo td b { color: var(--photo); }
+  .accent-video td b { color: var(--video); }
+  .accent-present td b { color: var(--present); }
+
+  .note {
+    font-size: .88rem; color: var(--muted); margin: .8rem 0 0;
+  }
+  .callout {
+    margin-top: 1rem; padding: .8rem 1rem; border-radius: 10px;
+    background: var(--video-soft); color: var(--ink); font-size: .92rem;
+  }
+  .callout b { color: var(--video); }
+
+  /* Story formula */
+  .story { border-radius: 12px; padding: 1.1rem 1.2rem; background: var(--bg); font-size: 1rem; line-height: 1.8; }
+  .story .v { color: var(--video); font-weight: 800; }
+  .story .p { color: var(--photo); font-weight: 800; }
+  .story .tag { font-size: .8rem; margin-left: .3rem; }
+
+  footer { text-align: center; color: var(--muted); font-size: .88rem; padding-top: .5rem; }
+  footer b { color: var(--ink); }
+</style>
+
+<main>
+  <header>
+    <p class="eyebrow">Español 3 Honors · Primera unidad</p>
+    <h1>Los tres tiempos 📸🎬</h1>
+    <p class="tagline">Presente · Pretérito · Imperfecto — repaso para Brinkley</p>
+  </header>
+
+  <section>
+    <h2>The Big Rule: Photo vs. Video</h2>
+    <div class="rule-pair">
+      <div class="rule photo">
+        <span class="big">📸</span>
+        <h3>Pretérito = a photo</h3>
+        <p>Click. It happened once. It's done.</p>
+        <p class="ex">Ayer <b>fui</b> al cine.<br><span>Yesterday I went to the movies.</span></p>
+      </div>
+      <div class="rule video">
+        <span class="big">🎬</span>
+        <h3>Imperfecto = a video</h3>
+        <p>Playing in the background. What things <em>were like</em>, what <em>used to</em> happen.</p>
+        <p class="ex">Cuando <b>era</b> niña, <b>iba</b> al cine todos los sábados.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Signal words <span style="font-weight:400;color:var(--muted);font-size:.9rem;">— they tell you which tense before you conjugate</span></h2>
+    <div class="signals">
+      <div class="photo-col">
+        <div class="col-label">📸 Photo → Pretérito</div>
+        <ul>
+          <li>ayer <span>yesterday</span></li>
+          <li>anoche <span>last night</span></li>
+          <li>una vez <span>one time</span></li>
+          <li>de repente <span>suddenly</span></li>
+          <li>el año pasado <span>last year</span></li>
+          <li>primero... luego... <span>first... then...</span></li>
+        </ul>
+      </div>
+      <div class="video-col">
+        <div class="col-label">🎬 Video → Imperfecto</div>
+        <ul>
+          <li>siempre <span>always</span></li>
+          <li>todos los días <span>every day</span></li>
+          <li>cuando era niña <span>when I was little</span></li>
+          <li>mientras <span>while</span></li>
+          <li>generalmente <span>usually</span></li>
+          <li>de niña <span>as a kid</span></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="chip present">Presente</span>What happens now</h2>
+    <div class="tablewrap">
+      <table class="accent-present">
+        <tr><th></th><th>-AR · hablar</th><th>-ER · comer</th><th>-IR · vivir</th></tr>
+        <tr><td>yo</td><td>habl<b>o</b></td><td>com<b>o</b></td><td>viv<b>o</b></td></tr>
+        <tr><td>tú</td><td>habl<b>as</b></td><td>com<b>es</b></td><td>viv<b>es</b></td></tr>
+        <tr><td>él/ella</td><td>habl<b>a</b></td><td>com<b>e</b></td><td>viv<b>e</b></td></tr>
+        <tr><td>nosotros</td><td>habl<b>amos</b></td><td>com<b>emos</b></td><td>viv<b>imos</b></td></tr>
+        <tr><td>ellos</td><td>habl<b>an</b></td><td>com<b>en</b></td><td>viv<b>en</b></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="chip photo">Pretérito 📸</span>Two songs</h2>
+    <div class="tablewrap">
+      <table class="accent-photo">
+        <tr><th></th><th>-AR · hablar</th><th>-ER / -IR · comer, vivir</th></tr>
+        <tr><td>yo</td><td>habl<b>é</b></td><td>com<b>í</b></td></tr>
+        <tr><td>tú</td><td>habl<b>aste</b></td><td>com<b>iste</b></td></tr>
+        <tr><td>él/ella</td><td>habl<b>ó</b></td><td>com<b>ió</b></td></tr>
+        <tr><td>nosotros</td><td>habl<b>amos</b></td><td>com<b>imos</b></td></tr>
+        <tr><td>ellos</td><td>habl<b>aron</b></td><td>com<b>ieron</b></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2><span class="chip video">Imperfecto 🎬</span>The easiest tense in Spanish</h2>
+    <div class="tablewrap">
+      <table class="accent-video">
+        <tr><th></th><th>-AR · hablar</th><th>-ER / -IR · comer, vivir</th></tr>
+        <tr><td>yo</td><td>habl<b>aba</b></td><td>com<b>ía</b></td></tr>
+        <tr><td>tú</td><td>habl<b>abas</b></td><td>com<b>ías</b></td></tr>
+        <tr><td>él/ella</td><td>habl<b>aba</b></td><td>com<b>ía</b></td></tr>
+        <tr><td>nosotros</td><td>habl<b>ábamos</b></td><td>com<b>íamos</b></td></tr>
+        <tr><td>ellos</td><td>habl<b>aban</b></td><td>com<b>ían</b></td></tr>
+      </table>
+    </div>
+  </section>
+
+  <section>
+    <h2>The irregulars <span style="font-weight:400;color:var(--muted);font-size:.9rem;">— memorize these, ignore the songs</span></h2>
+    <div class="tablewrap">
+      <table class="accent-photo">
+        <tr><th>📸 Pretérito</th><th>yo</th><th>él/ella</th></tr>
+        <tr><td>ir / ser <span style="color:var(--muted)">(same!)</span></td><td><b>fui</b></td><td><b>fue</b></td></tr>
+        <tr><td>hacer</td><td><b>hice</b></td><td><b>hizo</b></td></tr>
+        <tr><td>decir</td><td><b>dije</b></td><td><b>dijo</b></td></tr>
+        <tr><td>estar</td><td>estuve</td><td>estuvo</td></tr>
+        <tr><td>tener</td><td>tuve</td><td>tuvo</td></tr>
+        <tr><td>ver</td><td>vi</td><td>vio</td></tr>
+        <tr><td>dar</td><td>di</td><td>dio</td></tr>
+      </table>
+    </div>
+    <div class="callout">
+      🎬 <b>Imperfecto has only 3 irregulars in the whole language:</b> ser → <b>era</b> · ir → <b>iba</b> · ver → <b>veía</b>. Everything else follows the song. That's it. Three verbs.
+    </div>
+  </section>
+
+  <section>
+    <h2>Put it together — your story formula</h2>
+    <p class="note" style="margin:0 0 .8rem">Set the scene with video 🎬, then the action with photos 📸:</p>
+    <div class="story">
+      <span class="v">Era</span> verano y <span class="v">hacía</span> calor. Yo <span class="v">tenía</span> dieciséis años.<span class="tag">🎬</span><br>
+      De repente, mi amiga me <span class="p">llamó</span> y <span class="p">fuimos</span> a la piscina. <span class="p">Fue</span> el mejor día.<span class="tag">📸</span>
+    </div>
+  </section>
+
+  <footer>
+    La primera unidad empieza aquí. Nos vemos el jueves. 🌟
+  </footer>
+  <p style="text-align:center;margin-top:1rem;font-size:.9rem;"><a href="index.html" style="color:var(--muted);">← Volver a la práctica</a></p>
+</main>
+
+</body>
+</html>
