@@ -68,6 +68,11 @@ textarea{width:100%;min-height:52px;resize:vertical}
 .safe{background:var(--run-soft);color:var(--run)} .care{background:var(--amber-soft);color:var(--amber)}
 ul{padding-left:20px;margin:6px 0} li{margin:4px 0}
 .hide{display:none!important}
+.exrow{display:flex;gap:6px;align-items:center;margin:6px 0;flex-wrap:wrap}
+.exrow input.name{width:170px;flex:1;min-width:130px}
+.exrow input.n{width:58px}
+.exrow .last{flex-basis:100%;font-size:12px;color:var(--ink2);font-family:"Spline Sans Mono",monospace;padding-left:2px}
+.exlist{font-size:13px;color:var(--ink2);font-family:"Spline Sans Mono",monospace;margin-top:2px}
 .syncnote{font-size:12px;color:var(--ink2);text-align:center;margin-top:14px}
 del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size:13px;padding:2px 6px}
 </style>
@@ -96,6 +101,15 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
       <label>Minutes <input id="fMin" type="number" inputmode="numeric" min="1" placeholder="30"></label>
       <label id="milesWrap">Miles <input id="fMiles" type="number" inputmode="decimal" step="0.1" placeholder="3.0"></label>
       <label id="paceOut" class="hide">Pace <input id="fPace" readonly class="mono" style="width:90px"></label>
+    </div>
+    <div id="exWrap" class="hide">
+      <p class="eyebrow" style="margin-top:8px">Exercises — it remembers your last weights</p>
+      <div id="exRows"></div>
+      <div class="chips" style="margin:6px 0">
+        <button type="button" id="exAdd">+ add exercise</button>
+        <button type="button" id="exRepeat">↺ repeat last strength day</button>
+      </div>
+      <datalist id="exNames"></datalist>
     </div>
     <div class="row"><label>How did it feel?
       <div class="feels" id="feels">
@@ -238,7 +252,9 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
 TYPES.forEach(t=>{const b=document.createElement("button");b.textContent=t.label;
   b.setAttribute("aria-pressed",t.id===selType);
   b.onclick=()=>{selType=t.id;[...$("typeChips").children].forEach((c,i)=>c.setAttribute("aria-pressed",TYPES[i].id===selType));paceCalc();
-    $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));};
+    $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));
+    $("exWrap").classList.toggle("hide",selType!=="strength");
+    if(selType==="strength"&&!$("exRows").children.length)addExRow();};
   $("typeChips").appendChild(b);});
 $("milesWrap").classList.remove("hide");
 [...$("feels").children].forEach(b=>b.onclick=()=>{selFeel=b.dataset.f;[...$("feels").children].forEach(x=>x.setAttribute("aria-pressed",x===b));});
@@ -280,10 +296,54 @@ async function delLog(id){
   logs=logs.filter(l=>l.id!==id);lsSave();renderAll();
 }
 
+// ---- strength exercise memory ----
+function lastFor(name){ // most recent logged set of this exercise
+  name=name.trim().toLowerCase();if(!name)return null;
+  for(const l of logs){if(l.type!=="strength"||!l.exercises)continue;
+    const ex=l.exercises.find(e=>e.name.toLowerCase()===name);
+    if(ex)return {...ex,date:l.date};}
+  return null;
+}
+function knownExNames(){
+  const s=new Set();
+  logs.forEach(l=>(l.exercises||[]).forEach(e=>s.add(e.name)));
+  ["Goblet squat","Romanian deadlift","Farmer carry","Step-ups","Overhead press","Bent-over row","Suitcase carry","Heel drops","Plank","Dead bug","Bird dog","Pallof press","Wall angels","Band pull-aparts"].forEach(n=>s.add(n));
+  return [...s].sort();
+}
+function refreshDatalist(){$("exNames").innerHTML=knownExNames().map(n=>`<option value="${esc(n)}">`).join("");}
+function addExRow(pre){
+  const r=document.createElement("div");r.className="exrow";
+  r.innerHTML=`<input class="name" list="exNames" placeholder="Exercise">
+    <input class="n s" type="number" inputmode="numeric" placeholder="sets">
+    <input class="n r" type="number" inputmode="numeric" placeholder="reps">
+    <input class="n w" type="number" inputmode="decimal" placeholder="lb">
+    <button type="button" class="del" aria-label="remove exercise">✕</button>
+    <span class="last"></span>`;
+  const [name,s,rep,w]=r.querySelectorAll("input"),last=r.querySelector(".last");
+  name.onchange=()=>{const p=lastFor(name.value);
+    last.textContent=p?`last time (${p.date}): ${p.sets||"?"}×${p.reps||"?"} @ ${p.lb||"bw"}${p.lb?" lb":""}`:"";};
+  r.querySelector(".del").onclick=()=>r.remove();
+  if(pre){name.value=pre.name;s.value=pre.sets||"";rep.value=pre.reps||"";w.value=pre.lb||"";name.onchange();}
+  $("exRows").appendChild(r);refreshDatalist();
+}
+$("exAdd").onclick=()=>addExRow();
+$("exRepeat").onclick=()=>{
+  const prev=logs.find(l=>l.type==="strength"&&l.exercises&&l.exercises.length);
+  if(!prev){addExRow();return;}
+  $("exRows").innerHTML="";prev.exercises.forEach(e=>addExRow(e));
+};
+function collectExercises(){
+  return [...$("exRows").children].map(r=>{
+    const [name,s,rep,w]=r.querySelectorAll("input");
+    return {name:name.value.trim(),sets:+s.value||null,reps:+rep.value||null,lb:+w.value||null};
+  }).filter(e=>e.name);
+}
+
 $("saveBtn").onclick=()=>{
   const e={type:selType,min:+$("fMin").value||null,miles:+$("fMiles").value||null,feel:selFeel,note:$("fNote").value.trim()||null};
+  if(selType==="strength"){const ex=collectExercises();if(ex.length)e.exercises=ex;}
   addLog(e);
-  $("fMin").value="";$("fMiles").value="";$("fNote").value="";paceCalc();
+  $("fMin").value="";$("fMiles").value="";$("fNote").value="";$("exRows").innerHTML="";paceCalc();
   $("saveBtn").textContent="Logged ✓";setTimeout(()=>$("saveBtn").textContent="Log it",1400);
 };
 
@@ -315,8 +375,9 @@ function renderHistory(){
     const t=TYPES.find(x=>x.id===l.type)||TYPES[0];
     const bits=[l.min?l.min+" min":null,l.miles?l.miles+" mi":null,
       (l.min&&l.miles)?fmtPace(l.min/l.miles):null].filter(Boolean).join(" · ");
+    const exs=(l.exercises||[]).map(e=>`${esc(e.name)} ${e.sets||"?"}×${e.reps||"?"}${e.lb?` @ ${e.lb} lb`:""}`).join(" · ");
     return `<div class="log-item"><span class="dot" style="background:${t.color}"></span>
-      <div><span class="what">${t.label}</span>${l.note?`<div class="quiet">${esc(l.note)}</div>`:""}</div>
+      <div><span class="what">${t.label}</span>${exs?`<div class="exlist">${exs}</div>`:""}${l.note?`<div class="quiet">${esc(l.note)}</div>`:""}</div>
       <div class="meta"><span class="mono">${l.date}</span><br>${bits}
       <button class="del" data-id="${l.id}" aria-label="delete entry">✕</button></div></div>`;
   }).join("");
@@ -356,6 +417,6 @@ function drawBars(){
   $("dowBars").innerHTML=dow.map(v=>`<div style="height:${Math.round(v/mx*100)}%" title="${v}"></div>`).join("");
 }
 
-function renderAll(){renderNudge();renderBreakers();renderHistory();
+function renderAll(){renderNudge();renderBreakers();renderHistory();refreshDatalist();
   if(!$("tab-patterns").classList.contains("hide"))renderPatterns();}
 </script>
