@@ -91,6 +91,8 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
     <p class="eyebrow">One nudge, not ten</p>
     <h2 id="nudgeTitle"></h2>
     <p id="nudgeBody" style="margin:0"></p>
+    <div class="chips" style="margin-top:10px"><button type="button" id="loadSuggest">Set it up for me ↓</button></div>
+    <p class="quiet" style="margin:6px 0 0;font-size:12px">Pre-fills the form below. Change anything, or ignore it entirely — your pick always wins.</p>
   </div>
 
   <div class="card">
@@ -327,6 +329,32 @@ function addExRow(pre){
   $("exRows").appendChild(r);refreshDatalist();
 }
 $("exAdd").onclick=()=>addExRow();
+
+// ---- suggested workouts: a starting point, never an assignment ----
+const STRENGTH_A={tag:"A",list:[{name:"Goblet squat",sets:3,reps:8},{name:"Romanian deadlift",sets:3,reps:8},{name:"Farmer carry",sets:3,reps:1},{name:"Step-ups",sets:2,reps:10},{name:"Wall angels",sets:2,reps:10}]};
+const STRENGTH_B={tag:"B",list:[{name:"Overhead press",sets:3,reps:8},{name:"Bent-over row",sets:3,reps:10},{name:"Suitcase carry",sets:3,reps:1},{name:"Heel drops",sets:2,reps:15},{name:"Band pull-aparts",sets:2,reps:15}]};
+const DAY_SUGGEST=[ // by weekday: type + minutes hint (+ strength template)
+  {type:"strength"},{type:"strength"},{type:"run",min:35},{type:"peloton",min:20},
+  {type:"chairrun",min:30},{type:"posture",min:10},{type:"run",min:50}];
+function nextStrengthTemplate(){
+  const prev=logs.find(l=>l.type==="strength"&&l.template);
+  return prev&&prev.template==="A"?STRENGTH_B:STRENGTH_A;
+}
+let pendingTemplate=null;
+$("loadSuggest").onclick=()=>{
+  const s=DAY_SUGGEST[new Date().getDay()];
+  selType=s.type;
+  [...$("typeChips").children].forEach((c,i)=>c.setAttribute("aria-pressed",TYPES[i].id===selType));
+  $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));
+  $("exWrap").classList.toggle("hide",selType!=="strength");
+  $("fMin").value=s.min||"";pendingTemplate=null;
+  if(selType==="strength"){
+    const t=nextStrengthTemplate();pendingTemplate=t.tag;
+    $("exRows").innerHTML="";
+    t.list.forEach(e=>{const p=lastFor(e.name);addExRow({name:e.name,sets:e.sets,reps:e.reps,lb:p?p.lb:null});});
+  }
+  paceCalc();$("saveBtn").scrollIntoView({behavior:"smooth",block:"center"});
+};
 $("exRepeat").onclick=()=>{
   const prev=logs.find(l=>l.type==="strength"&&l.exercises&&l.exercises.length);
   if(!prev){addExRow();return;}
@@ -341,8 +369,8 @@ function collectExercises(){
 
 $("saveBtn").onclick=()=>{
   const e={type:selType,min:+$("fMin").value||null,miles:+$("fMiles").value||null,feel:selFeel,note:$("fNote").value.trim()||null};
-  if(selType==="strength"){const ex=collectExercises();if(ex.length)e.exercises=ex;}
-  addLog(e);
+  if(selType==="strength"){const ex=collectExercises();if(ex.length)e.exercises=ex;if(pendingTemplate)e.template=pendingTemplate;}
+  addLog(e);pendingTemplate=null;
   $("fMin").value="";$("fMiles").value="";$("fNote").value="";$("exRows").innerHTML="";paceCalc();
   $("saveBtn").textContent="Logged ✓";setTimeout(()=>$("saveBtn").textContent="Log it",1400);
 };
