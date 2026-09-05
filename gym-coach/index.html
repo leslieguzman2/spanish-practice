@@ -88,7 +88,7 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
 <!-- TODAY -->
 <section id="tab-today">
   <div class="card nudge" id="nudgeCard">
-    <p class="eyebrow">One nudge, not ten</p>
+    <p class="eyebrow">Today's plan — this is the only decision to make</p>
     <h2 id="nudgeTitle"></h2>
     <p id="nudgeBody" style="margin:0"></p>
     <div class="chips" style="margin-top:10px"><button type="button" id="loadSuggest">Set it up for me ↓</button></div>
@@ -128,14 +128,17 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
   </div>
 
   <div class="card">
-    <h2>Two-minute pattern breakers</h2>
-    <p class="quiet" style="margin-top:0">For days when nothing is happening. Pick one, log it, that's a win.</p>
-    <ul id="breakers"></ul>
+    <details id="breakersBox">
+      <summary style="cursor:pointer"><b>Plan B — the day fell apart?</b> <span class="quiet">Two minutes still counts.</span></summary>
+      <p class="quiet">These replace today's plan when it's not happening. Pick one, log it, done — the plan resumes tomorrow with zero penalty.</p>
+      <ul id="breakers"></ul>
+    </details>
   </div>
 </section>
 
 <!-- PLAN -->
 <section id="tab-plan" class="hide">
+  <p class="quiet" style="margin:12px 4px 0">This tab is the reference manual — you never have to work from it. Each morning the <b>Today</b> tab pulls the right day from here and hands it to you.</p>
   <div class="card">
     <h2>Flying Pig Half — pushing Diego</h2>
     <p class="quiet" style="margin-top:0">Goal: 13.1 mi at 9:30/mi with the chair. That means training your solo paces faster and practicing loaded pushes on hills — Cincinnati will have them.</p>
@@ -401,14 +404,21 @@ function daysSinceLast(){
   return Math.floor((Date.now()-move[0].ts)/864e5);
 }
 
+const PLAN_TODAY=[
+ ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights."],
+ ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights."],
+ ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right."],
+ ["Peloton or dance — your pick","Whatever sounds fun. Both count the same."],
+ ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls."],
+ ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it."],
+ ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon."]];
 function renderNudge(){
-  const gap=daysSinceLast(),dow=new Date().getDay();
-  let t,b;
-  if(gap===null){t="Welcome. No history needed.";b="Log anything you've done lately — or pick a two-minute pattern breaker below. The app starts wherever you are.";}
-  else if(gap>=3){const idea=BREAKERS[Math.floor(Math.random()*BREAKERS.length)];
-    t="Quiet stretch — let's break the pattern, tiny.";b="No lecture. "+idea;}
-  else if(gap>=1){t="Yesterday-ish counts. Today can be small.";b=[,"Strength A day works well after a run day: goblet squats, RDLs, carries, then wall angels.","Easy run or Peloton — conversational effort, nothing heroic.","Mid-week is a good dance or Peloton day.","Yoga or a long stretch session — extension and hips, skip the deep forward folds.","Rest is a valid log. Or a 5-minute posture set.","Long-ish easy run if the morning allows.","Strength B: press, supported rows, suitcase carries, a few heel drops."][dow]||"Pick whatever sounds least annoying and log it.";}
-  else{t="You already moved today.";b="If you're back for more: posture set, or just enjoy having logged it. Nothing else required.";}
+  const gap=daysSinceLast(),dow=new Date().getDay(),[t,detail]=PLAN_TODAY[dow];
+  const doneToday=logs.some(l=>l.date===todayStr());
+  let b=detail;
+  if(doneToday)b="Already logged today — the plan is satisfied. Anything more is extra, not owed.";
+  else if(gap!==null&&gap>=3){b=`Quiet for ${gap} days — that just means today shrinks, not that you owe makeup work. Do a two-minute Plan B below, or the real thing if energy allows. Either one counts as back on plan.`;
+    const bx=$("breakersBox");if(bx)bx.open=true;}
   $("nudgeTitle").textContent=t;$("nudgeBody").textContent=b;
 }
 
