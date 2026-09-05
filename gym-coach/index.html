@@ -1,0 +1,361 @@
+<title>Motion &amp; The Pig</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400;12..96,600;12..96,800&family=Albert+Sans:wght@400;500;600;700&family=Spline+Sans+Mono:wght@400;500;600&display=swap">
+<style>
+:root{
+  --bg:#FAF7F2; --panel:#FFFFFF; --panel2:#F3EEE7; --ink:#26222B; --ink2:#5C5361;
+  --line:#E4DCD2; --berry:#B4356B; --berry-soft:#F7E3EC; --run:#1F7A6D; --run-soft:#DFEFEB;
+  --amber:#B07A2A; --amber-soft:#F5EAD6; --plum:#6B5B8A; --plum-soft:#EBE6F2;
+  --chipbg:#FFFFFF; --shadow:0 1px 2px rgba(38,34,43,.06),0 6px 18px rgba(38,34,43,.05);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#1B1720; --panel:#251F2C; --panel2:#2E2735; --ink:#F1EBF0; --ink2:#B4A9B8;
+    --line:#3A3242; --berry:#E4649B; --berry-soft:#3D2432; --run:#4FB3A3; --run-soft:#213A36;
+    --amber:#D9A254; --amber-soft:#3B2F1D; --plum:#A794C9; --plum-soft:#312A3E;
+    --chipbg:#2E2735; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#1B1720; --panel:#251F2C; --panel2:#2E2735; --ink:#F1EBF0; --ink2:#B4A9B8;
+  --line:#3A3242; --berry:#E4649B; --berry-soft:#3D2432; --run:#4FB3A3; --run-soft:#213A36;
+  --amber:#D9A254; --amber-soft:#3B2F1D; --plum:#A794C9; --plum-soft:#312A3E;
+  --chipbg:#2E2735; --shadow:0 1px 2px rgba(0,0,0,.3),0 6px 18px rgba(0,0,0,.25);
+}
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font:16px/1.55 "Albert Sans",system-ui,sans-serif;margin:0;padding:0 0 90px}
+.wrap{max-width:680px;margin:0 auto;padding:20px 16px}
+header h1{font-family:"Bricolage Grotesque",Georgia,serif;font-weight:800;font-size:clamp(26px,6vw,34px);margin:4px 0 2px;letter-spacing:-.01em;text-wrap:balance}
+header p{color:var(--ink2);margin:0 0 6px;font-size:14px}
+.countdown{font-family:"Spline Sans Mono",monospace;font-size:13px;color:var(--berry);font-weight:600}
+nav{position:fixed;bottom:0;left:0;right:0;background:var(--panel);border-top:1px solid var(--line);display:flex;justify-content:center;gap:2px;padding:6px 8px calc(6px + env(safe-area-inset-bottom));z-index:10}
+nav button{flex:1;max-width:160px;background:none;border:0;border-radius:12px;padding:9px 4px;font:600 13px "Albert Sans",sans-serif;color:var(--ink2);cursor:pointer}
+nav button.on{background:var(--berry-soft);color:var(--berry)}
+nav button:focus-visible,button:focus-visible{outline:2px solid var(--berry);outline-offset:2px}
+.card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:16px;margin:12px 0;box-shadow:var(--shadow)}
+.card h2{font-family:"Bricolage Grotesque",Georgia,serif;font-size:18px;font-weight:600;margin:0 0 8px}
+.eyebrow{font-size:11px;letter-spacing:.09em;text-transform:uppercase;color:var(--ink2);font-weight:700;margin:0 0 4px}
+.nudge{background:var(--berry-soft);border:1px solid transparent}
+.nudge h2{color:var(--berry)}
+.quiet{color:var(--ink2);font-size:14px}
+.mono{font-family:"Spline Sans Mono",monospace;font-variant-numeric:tabular-nums}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chips button{background:var(--chipbg);border:1px solid var(--line);border-radius:999px;padding:9px 14px;font:600 14px "Albert Sans",sans-serif;color:var(--ink);cursor:pointer}
+.chips button[aria-pressed="true"]{border-color:var(--berry);background:var(--berry-soft);color:var(--berry)}
+.row{display:flex;gap:10px;flex-wrap:wrap;margin:10px 0}
+.row label{display:flex;flex-direction:column;gap:4px;font-size:12px;font-weight:600;color:var(--ink2)}
+input,textarea{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:9px 10px;font:15px "Albert Sans",sans-serif;color:var(--ink);width:110px}
+textarea{width:100%;min-height:52px;resize:vertical}
+.save{background:var(--berry);color:#fff;border:0;border-radius:12px;padding:12px 22px;font:700 15px "Albert Sans",sans-serif;cursor:pointer;margin-top:10px}
+.feels{display:flex;gap:8px}
+.feels button{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:8px 12px;font-size:18px;cursor:pointer}
+.feels button[aria-pressed="true"]{border-color:var(--berry);background:var(--berry-soft)}
+.log-item{display:flex;align-items:baseline;gap:10px;padding:10px 0;border-bottom:1px solid var(--line)}
+.log-item:last-child{border-bottom:0}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;position:relative;top:0}
+.log-item .what{font-weight:600}
+.log-item .meta{color:var(--ink2);font-size:13px;margin-left:auto;text-align:right}
+.week{display:grid;grid-template-columns:70px 1fr;gap:4px 12px;font-size:14px}
+.week .d{font-weight:700;color:var(--ink2);font-size:12px;letter-spacing:.05em;text-transform:uppercase;padding-top:2px}
+.phase{border-left:3px solid var(--plum);padding:2px 0 2px 12px;margin:12px 0}
+.phase h3{margin:0;font-size:15px}
+.phase p{margin:2px 0 0;color:var(--ink2);font-size:14px}
+.obs{padding:10px 12px;background:var(--panel2);border-radius:10px;margin:8px 0;font-size:14px}
+.bars{display:flex;gap:6px;align-items:flex-end;height:64px;margin:10px 0 2px}
+.bars div{flex:1;background:var(--run);border-radius:4px 4px 0 0;min-height:3px;opacity:.85}
+.bars-lab{display:flex;gap:6px;font-size:10px;color:var(--ink2);text-align:center}
+.bars-lab span{flex:1}
+.tag{display:inline-block;font-size:11px;font-weight:700;letter-spacing:.05em;border-radius:6px;padding:2px 7px}
+.safe{background:var(--run-soft);color:var(--run)} .care{background:var(--amber-soft);color:var(--amber)}
+ul{padding-left:20px;margin:6px 0} li{margin:4px 0}
+.hide{display:none!important}
+.syncnote{font-size:12px;color:var(--ink2);text-align:center;margin-top:14px}
+del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size:13px;padding:2px 6px}
+</style>
+
+<div class="wrap">
+<header>
+  <p class="eyebrow">Leslie's training companion</p>
+  <h1>Motion &amp; The Pig</h1>
+  <p>A coach that watches patterns, not streaks. Rest counts. Dancing counts. Everything counts.</p>
+  <p class="countdown" id="countdown"></p>
+</header>
+
+<!-- TODAY -->
+<section id="tab-today">
+  <div class="card nudge" id="nudgeCard">
+    <p class="eyebrow">One nudge, not ten</p>
+    <h2 id="nudgeTitle"></h2>
+    <p id="nudgeBody" style="margin:0"></p>
+  </div>
+
+  <div class="card">
+    <h2>Log a movement</h2>
+    <p class="quiet" style="margin-top:0">Ten seconds, then done. A 3-minute dance break is a real entry.</p>
+    <div class="chips" id="typeChips"></div>
+    <div class="row">
+      <label>Minutes <input id="fMin" type="number" inputmode="numeric" min="1" placeholder="30"></label>
+      <label id="milesWrap">Miles <input id="fMiles" type="number" inputmode="decimal" step="0.1" placeholder="3.0"></label>
+      <label id="paceOut" class="hide">Pace <input id="fPace" readonly class="mono" style="width:90px"></label>
+    </div>
+    <div class="row"><label>How did it feel?
+      <div class="feels" id="feels">
+        <button data-f="rough" aria-pressed="false" title="rough">😮‍💨</button>
+        <button data-f="ok" aria-pressed="false" title="okay">🙂</button>
+        <button data-f="good" aria-pressed="false" title="good">😄</button>
+        <button data-f="great" aria-pressed="false" title="strong">💪</button>
+      </div></label>
+    </div>
+    <label style="font-size:12px;font-weight:600;color:var(--ink2)">Note (optional)
+      <textarea id="fNote" placeholder="Pushed the chair on the flat loop… danced to two songs while cooking…"></textarea>
+    </label>
+    <button class="save" id="saveBtn">Log it</button>
+  </div>
+
+  <div class="card">
+    <h2>Two-minute pattern breakers</h2>
+    <p class="quiet" style="margin-top:0">For days when nothing is happening. Pick one, log it, that's a win.</p>
+    <ul id="breakers"></ul>
+  </div>
+</section>
+
+<!-- PLAN -->
+<section id="tab-plan" class="hide">
+  <div class="card">
+    <h2>Flying Pig Half — pushing Diego</h2>
+    <p class="quiet" style="margin-top:0">Goal: 13.1 mi at 9:30/mi with the chair. That means training your solo paces faster and practicing loaded pushes on hills — Cincinnati will have them.</p>
+    <div class="phase"><h3>Now → December: Base</h3><p>3 runs/week, easy conversational pace (10:30–11:30 solo). One run per week pushing the chair on flat ground. Build to 15–18 mi/week. Peloton and dance are cross-training, not extras.</p></div>
+    <div class="phase"><h3>January → mid-March: Build</h3><p>Add one tempo run (9:15–9:40 solo pace, 15–25 min). Long run grows 1 mi every other week, to 9–10 mi. Chair pushes move to rolling hills.</p></div>
+    <div class="phase"><h3>Mid-March → late April: Sharpen</h3><p>Long runs 10–12 mi, at least two of them with Diego and the chair at goal effort. Practice fueling and the downhills — braking a chair downhill is its own workout.</p></div>
+    <div class="phase"><h3>Last 2 weeks: Taper</h3><p>Cut volume ~40%, keep a little speed. Trust the work.</p></div>
+  </div>
+  <div class="card">
+    <h2>A sample week (base phase)</h2>
+    <div class="week">
+      <span class="d">Mon</span><span>Strength A (bone-loading) + posture set</span>
+      <span class="d">Tue</span><span>Easy run 30–40 min</span>
+      <span class="d">Wed</span><span>Peloton or dance — whatever sounds fun</span>
+      <span class="d">Thu</span><span>Chair-push run, flat, 25–35 min</span>
+      <span class="d">Fri</span><span>Rest or 10-min posture set. Rest is training.</span>
+      <span class="d">Sat</span><span>Long-ish run 4–6 mi easy</span>
+      <span class="d">Sun</span><span>Strength B + something with the kids</span>
+    </div>
+  </div>
+  <div class="card">
+    <h2>Strength — built for osteoporosis, not around it</h2>
+    <p class="quiet" style="margin-top:0">Bones get stronger from load and impact done with a neutral spine. The rule: hinge at the hips, never round the back under weight, no loaded crunches or toe-touches, no heavy twisting.</p>
+    <p><span class="tag safe">DO — LOADS BONE</span></p>
+    <ul>
+      <li><b>A:</b> Goblet squats, dumbbell Romanian deadlifts (hips back, flat back), farmer carries down the hallway, step-ups</li>
+      <li><b>B:</b> Overhead press, bent-over rows (chest supported on bench), suitcase carries, heel drops / small hops for impact</li>
+    </ul>
+    <p><span class="tag care">SKIP OR SWAP</span></p>
+    <ul>
+      <li>Sit-ups, crunches, rounded-back deadlifts → swap for planks, dead bugs, bird dogs</li>
+      <li>Loaded Russian twists, aggressive yoga forward folds → swap for pallof presses (band anti-rotation)</li>
+    </ul>
+  </div>
+  <div class="card">
+    <h2>Posture — the un-hunch kit</h2>
+    <p class="quiet" style="margin-top:0">A hunched upper back responds to daily extension work, not willpower. 5–10 minutes, most days:</p>
+    <ul>
+      <li><b>Wall angels</b> — 2×10, slow, back flat to the wall</li>
+      <li><b>Band pull-aparts</b> — 2×15 with a light band</li>
+      <li><b>Doorway chest stretch</b> — 30s each side</li>
+      <li><b>Chin tucks</b> — 10, at red lights or on Zoom</li>
+      <li><b>Prone Y-T-W raises</b> on the floor or bench — 8 each</li>
+    </ul>
+    <p class="quiet">Bonus: every strong row and carry above is also posture work. Pushing Diego's chair with tall shoulders is posture work too.</p>
+  </div>
+</section>
+
+<!-- PATTERNS -->
+<section id="tab-patterns" class="hide">
+  <div class="card">
+    <h2>What I'm noticing</h2>
+    <p class="quiet" style="margin-top:0">Observations, not grades. No streaks live here.</p>
+    <div id="observations"></div>
+  </div>
+  <div class="card">
+    <h2>Movement by weekday</h2>
+    <div class="bars" id="dowBars"></div>
+    <div class="bars-lab"><span>Su</span><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span></div>
+  </div>
+</section>
+
+<!-- HISTORY -->
+<section id="tab-history" class="hide">
+  <div class="card"><h2>History</h2><div id="logList"></div></div>
+</section>
+
+<p class="syncnote" id="syncnote">Saving on this device.</p>
+</div>
+
+<nav>
+  <button data-tab="today" class="on">Today</button>
+  <button data-tab="plan">Plan</button>
+  <button data-tab="patterns">Patterns</button>
+  <button data-tab="history">History</button>
+</nav>
+
+<script>
+const TYPES=[
+ {id:"run",label:"Run",color:"var(--run)"},
+ {id:"chairrun",label:"Run + Diego",color:"var(--run)"},
+ {id:"strength",label:"Strength",color:"var(--amber)"},
+ {id:"posture",label:"Posture set",color:"var(--plum)"},
+ {id:"peloton",label:"Peloton",color:"var(--berry)"},
+ {id:"dance",label:"Dance",color:"var(--berry)"},
+ {id:"walk",label:"Walk",color:"var(--run)"},
+ {id:"rest",label:"Rest (on purpose)",color:"var(--ink2)"},
+];
+const BREAKERS=[
+ "One song, full volume, dance like the kitchen is a stage. Log it as Dance, 3 min.",
+ "Wall angels while the coffee brews. 2×10. That's a posture set.",
+ "Farmer-carry the laundry basket the long way around the house. Twice.",
+ "Walk to the end of the block and back. No shoes-and-gear ceremony, just go.",
+ "10 chin tucks + doorway stretch. 90 seconds, counts.",
+ "Peloton, 10 minutes, any class, quit guilt-free when it ends.",
+ "Text Diego a training-day meme, then do 10 step-ups on the stairs.",
+];
+const RACE=new Date("2027-05-02T06:30:00");
+let logs=[], selType="run", selFeel="ok", db=null;
+
+const $=id=>document.getElementById(id);
+const todayStr=()=>new Date().toISOString().slice(0,10);
+
+// countdown
+{const d=Math.ceil((RACE-new Date())/864e5);
+ $("countdown").textContent=`Flying Pig · May 2, 2027 · ${d} days out · goal 9:30/mi with the chair`;}
+
+// tabs
+document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
+  document.querySelectorAll("nav button").forEach(x=>x.classList.toggle("on",x===b));
+  ["today","plan","patterns","history"].forEach(t=>$("tab-"+t).classList.toggle("hide",t!==b.dataset.tab));
+  if(b.dataset.tab==="patterns")renderPatterns();
+});
+
+// type chips
+TYPES.forEach(t=>{const b=document.createElement("button");b.textContent=t.label;
+  b.setAttribute("aria-pressed",t.id===selType);
+  b.onclick=()=>{selType=t.id;[...$("typeChips").children].forEach((c,i)=>c.setAttribute("aria-pressed",TYPES[i].id===selType));paceCalc();
+    $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));};
+  $("typeChips").appendChild(b);});
+$("milesWrap").classList.remove("hide");
+[...$("feels").children].forEach(b=>b.onclick=()=>{selFeel=b.dataset.f;[...$("feels").children].forEach(x=>x.setAttribute("aria-pressed",x===b));});
+$("feels").children[1].setAttribute("aria-pressed","true");
+
+function paceCalc(){
+  const m=+$("fMin").value,mi=+$("fMiles").value;
+  if(m>0&&mi>0&&["run","chairrun","walk"].includes(selType)){
+    const p=m/mi,mm=Math.floor(p),ss=Math.round((p-mm)*60);
+    $("fPace").value=`${mm}:${String(ss).padStart(2,"0")}/mi`;$("paceOut").classList.remove("hide");
+  } else $("paceOut").classList.add("hide");
+}
+$("fMin").oninput=paceCalc;$("fMiles").oninput=paceCalc;
+
+// storage: db capability with localStorage fallback
+function lsLoad(){try{logs=JSON.parse(localStorage.getItem("mp_logs")||"[]")}catch(e){logs=[]}}
+function lsSave(){try{localStorage.setItem("mp_logs",JSON.stringify(logs))}catch(e){}}
+lsLoad();renderAll();
+
+(async()=>{
+  try{
+    db=window.claude&&await claude.use("db");
+    if(!db)return;
+    db.collection("logs").orderBy("ts","desc").limit(500).onSnapshot(snap=>{
+      logs=snap.docs.map(d=>({id:d.id,...d.data()}));
+      $("syncnote").textContent="Synced — your logs follow you across devices.";
+      renderAll();
+    });
+  }catch(e){}
+})();
+
+async function addLog(entry){
+  entry.ts=Date.now();entry.date=todayStr();entry.id="l"+entry.ts;
+  if(db){try{await db.doc("logs/"+entry.id).set(entry);return}catch(e){}}
+  logs.unshift(entry);lsSave();renderAll();
+}
+async function delLog(id){
+  if(db){try{await db.doc("logs/"+id).delete();return}catch(e){}}
+  logs=logs.filter(l=>l.id!==id);lsSave();renderAll();
+}
+
+$("saveBtn").onclick=()=>{
+  const e={type:selType,min:+$("fMin").value||null,miles:+$("fMiles").value||null,feel:selFeel,note:$("fNote").value.trim()||null};
+  addLog(e);
+  $("fMin").value="";$("fMiles").value="";$("fNote").value="";paceCalc();
+  $("saveBtn").textContent="Logged ✓";setTimeout(()=>$("saveBtn").textContent="Log it",1400);
+};
+
+function daysSinceLast(){
+  const move=logs.filter(l=>l.type!=="rest");
+  if(!move.length)return null;
+  return Math.floor((Date.now()-move[0].ts)/864e5);
+}
+
+function renderNudge(){
+  const gap=daysSinceLast(),dow=new Date().getDay();
+  let t,b;
+  if(gap===null){t="Welcome. No history needed.";b="Log anything you've done lately — or pick a two-minute pattern breaker below. The app starts wherever you are.";}
+  else if(gap>=3){const idea=BREAKERS[Math.floor(Math.random()*BREAKERS.length)];
+    t="Quiet stretch — let's break the pattern, tiny.";b="No lecture. "+idea;}
+  else if(gap>=1){t="Yesterday-ish counts. Today can be small.";b=[,"Strength A day works well after a run day: goblet squats, RDLs, carries, then wall angels.","Easy run or Peloton — conversational effort, nothing heroic.","Mid-week is a good dance or Peloton day.","Chair-push practice? Flat loop, tall shoulders, easy effort.","Rest is a valid log. Or a 5-minute posture set.","Long-ish easy run if the morning allows.","Strength B: press, supported rows, suitcase carries, a few heel drops."][dow]||"Pick whatever sounds least annoying and log it.";}
+  else{t="You already moved today.";b="If you're back for more: posture set, or just enjoy having logged it. Nothing else required.";}
+  $("nudgeTitle").textContent=t;$("nudgeBody").textContent=b;
+}
+
+function renderBreakers(){
+  $("breakers").innerHTML=BREAKERS.map(x=>`<li>${x}</li>`).join("");
+}
+
+function renderHistory(){
+  const el=$("logList");
+  if(!logs.length){el.innerHTML='<p class="quiet">Nothing yet — and that\'s just a starting point, not a verdict.</p>';return;}
+  el.innerHTML=logs.map(l=>{
+    const t=TYPES.find(x=>x.id===l.type)||TYPES[0];
+    const bits=[l.min?l.min+" min":null,l.miles?l.miles+" mi":null,
+      (l.min&&l.miles)?fmtPace(l.min/l.miles):null].filter(Boolean).join(" · ");
+    return `<div class="log-item"><span class="dot" style="background:${t.color}"></span>
+      <div><span class="what">${t.label}</span>${l.note?`<div class="quiet">${esc(l.note)}</div>`:""}</div>
+      <div class="meta"><span class="mono">${l.date}</span><br>${bits}
+      <button class="del" data-id="${l.id}" aria-label="delete entry">✕</button></div></div>`;
+  }).join("");
+  el.querySelectorAll(".del").forEach(b=>b.onclick=()=>delLog(b.dataset.id));
+}
+const esc=s=>s.replace(/[<>&"]/g,c=>({"<":"&lt;",">":"&gt;","&":"&amp;",'"':"&quot;"}[c]));
+const fmtPace=p=>`${Math.floor(p)}:${String(Math.round((p-Math.floor(p))*60)).padStart(2,"0")}/mi`;
+
+function renderPatterns(){
+  const el=$("observations"),move=logs.filter(l=>l.type!=="rest");
+  const obs=[];
+  if(move.length>=3){
+    const dow=[0,0,0,0,0,0,0];move.forEach(l=>dow[new Date(l.ts).getDay()]++);
+    const names=["Sundays","Mondays","Tuesdays","Wednesdays","Thursdays","Fridays","Saturdays"];
+    const best=dow.indexOf(Math.max(...dow));
+    obs.push(`${names[best]} seem to be when movement happens most easily for you. Worth protecting that slot.`);
+    const feels=move.filter(l=>l.feel==="good"||l.feel==="great");
+    if(feels.length){const ft={};feels.forEach(l=>ft[l.type]=(ft[l.type]||0)+1);
+      const top=Object.entries(ft).sort((a,b)=>b[1]-a[1])[0][0];
+      const lbl=(TYPES.find(t=>t.id===top)||{}).label||top;
+      obs.push(`When you log "${lbl}", you tend to feel good afterward. That's data, not coincidence.`);}
+    const runs=move.filter(l=>l.min&&l.miles&&(l.type==="run"||l.type==="chairrun"));
+    if(runs.length>=2){const avg=runs.reduce((s,l)=>s+l.min/l.miles,0)/runs.length;
+      obs.push(`Recent running pace averages ${fmtPace(avg)}. Goal race pace is 9:30/mi with the chair — easy days are supposed to be slower than that.`);}
+    const g=daysSinceLast();
+    if(g>=3)obs.push(`It's been ${g} days since a logged movement. Gaps aren't failures — they're just where a tiny pattern breaker fits.`);
+  } else {
+    el.innerHTML='<div class="obs">Patterns need a few entries first. After 3 or so logs, this page starts noticing things — gently.</div>';
+    drawBars();return;
+  }
+  el.innerHTML=obs.map(o=>`<div class="obs">${o}</div>`).join("");
+  drawBars();
+}
+function drawBars(){
+  const dow=[0,0,0,0,0,0,0];logs.filter(l=>l.type!=="rest").forEach(l=>dow[new Date(l.ts).getDay()]++);
+  const mx=Math.max(1,...dow);
+  $("dowBars").innerHTML=dow.map(v=>`<div style="height:${Math.round(v/mx*100)}%" title="${v}"></div>`).join("");
+}
+
+function renderAll(){renderNudge();renderBreakers();renderHistory();
+  if(!$("tab-patterns").classList.contains("hide"))renderPatterns();}
+</script>
