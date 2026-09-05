@@ -150,7 +150,7 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
       <span class="d">Mon</span><span>Strength A (bone-loading) + posture set</span>
       <span class="d">Tue</span><span>Easy run 30–40 min</span>
       <span class="d">Wed</span><span>Peloton or dance — whatever sounds fun</span>
-      <span class="d">Thu</span><span>Chair-push run, flat, 25–35 min</span>
+      <span class="d">Thu</span><span>Yoga / stretch session, 20–30 min</span>
       <span class="d">Fri</span><span>Rest or 10-min posture set. Rest is training.</span>
       <span class="d">Sat</span><span>Long-ish run 4–6 mi easy</span>
       <span class="d">Sun</span><span>Strength B + something with the kids</span>
@@ -169,6 +169,26 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
       <li>Sit-ups, crunches, rounded-back deadlifts → swap for planks, dead bugs, bird dogs</li>
       <li>Loaded Russian twists, aggressive yoga forward folds → swap for pallof presses (band anti-rotation)</li>
     </ul>
+  </div>
+  <div class="card">
+    <h2>Yoga &amp; stretching — with an osteoporosis filter</h2>
+    <p class="quiet" style="margin-top:0">Yoga is great for you — but the classic flow includes moves that load a rounded spine, which is the one thing your bones shouldn't do. Same rule as strength: extension yes, loaded flexion and deep twists no.</p>
+    <p><span class="tag safe">GOOD FOR YOU</span></p>
+    <ul>
+      <li><b>Warrior I &amp; II, chair pose</b> — leg strength, upright spine</li>
+      <li><b>Bridge pose</b> — back extension, glutes, posture</li>
+      <li><b>Cobra / sphinx (gentle)</b> — directly counters the hunch</li>
+      <li><b>Tree, balance poses</b> — fall prevention, which is the real osteoporosis game</li>
+      <li><b>Hip flexor lunge stretch, figure-4, lying hamstring stretch with a strap</b> — runner maintenance with a flat back</li>
+      <li><b>Cat-cow moved gently, doorway chest stretch, child's pose kept easy</b></li>
+    </ul>
+    <p><span class="tag care">SKIP OR SOFTEN</span></p>
+    <ul>
+      <li>Deep seated or standing forward folds (rounding under gravity) → hinge at hips with a long spine instead</li>
+      <li>Plow, shoulder stand, deep spinal twists → skip</li>
+      <li>Anything where you round hard and pull → soften it</li>
+    </ul>
+    <p class="quiet">A 20-minute gentle or Iyengar-style class works; just substitute when the instructor calls a deep fold. Peloton has yoga and stretch classes too — those count as this.</p>
   </div>
   <div class="card">
     <h2>Posture — the un-hunch kit</h2>
@@ -216,8 +236,8 @@ del-btn,.del{background:none;border:0;color:var(--ink2);cursor:pointer;font-size
 <script>
 const TYPES=[
  {id:"run",label:"Run",color:"var(--run)"},
- {id:"chairrun",label:"Run + Diego",color:"var(--run)"},
  {id:"strength",label:"Strength",color:"var(--amber)"},
+ {id:"yoga",label:"Yoga / Stretch",color:"var(--plum)"},
  {id:"posture",label:"Posture set",color:"var(--plum)"},
  {id:"peloton",label:"Peloton",color:"var(--berry)"},
  {id:"dance",label:"Dance",color:"var(--berry)"},
@@ -254,7 +274,7 @@ document.querySelectorAll("nav button").forEach(b=>b.onclick=()=>{
 TYPES.forEach(t=>{const b=document.createElement("button");b.textContent=t.label;
   b.setAttribute("aria-pressed",t.id===selType);
   b.onclick=()=>{selType=t.id;[...$("typeChips").children].forEach((c,i)=>c.setAttribute("aria-pressed",TYPES[i].id===selType));paceCalc();
-    $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));
+    $("milesWrap").classList.toggle("hide",!["run","walk"].includes(selType));
     $("exWrap").classList.toggle("hide",selType!=="strength");
     if(selType==="strength"&&!$("exRows").children.length)addExRow();};
   $("typeChips").appendChild(b);});
@@ -264,7 +284,7 @@ $("feels").children[1].setAttribute("aria-pressed","true");
 
 function paceCalc(){
   const m=+$("fMin").value,mi=+$("fMiles").value;
-  if(m>0&&mi>0&&["run","chairrun","walk"].includes(selType)){
+  if(m>0&&mi>0&&["run","walk"].includes(selType)){
     const p=m/mi,mm=Math.floor(p),ss=Math.round((p-mm)*60);
     $("fPace").value=`${mm}:${String(ss).padStart(2,"0")}/mi`;$("paceOut").classList.remove("hide");
   } else $("paceOut").classList.add("hide");
@@ -335,7 +355,7 @@ const STRENGTH_A={tag:"A",list:[{name:"Goblet squat",sets:3,reps:8},{name:"Roman
 const STRENGTH_B={tag:"B",list:[{name:"Overhead press",sets:3,reps:8},{name:"Bent-over row",sets:3,reps:10},{name:"Suitcase carry",sets:3,reps:1},{name:"Heel drops",sets:2,reps:15},{name:"Band pull-aparts",sets:2,reps:15}]};
 const DAY_SUGGEST=[ // by weekday: type + minutes hint (+ strength template)
   {type:"strength"},{type:"strength"},{type:"run",min:35},{type:"peloton",min:20},
-  {type:"chairrun",min:30},{type:"posture",min:10},{type:"run",min:50}];
+  {type:"yoga",min:20},{type:"posture",min:10},{type:"run",min:50}];
 function nextStrengthTemplate(){
   const prev=logs.find(l=>l.type==="strength"&&l.template);
   return prev&&prev.template==="A"?STRENGTH_B:STRENGTH_A;
@@ -345,7 +365,7 @@ $("loadSuggest").onclick=()=>{
   const s=DAY_SUGGEST[new Date().getDay()];
   selType=s.type;
   [...$("typeChips").children].forEach((c,i)=>c.setAttribute("aria-pressed",TYPES[i].id===selType));
-  $("milesWrap").classList.toggle("hide",!["run","chairrun","walk"].includes(selType));
+  $("milesWrap").classList.toggle("hide",!["run","walk"].includes(selType));
   $("exWrap").classList.toggle("hide",selType!=="strength");
   $("fMin").value=s.min||"";pendingTemplate=null;
   if(selType==="strength"){
@@ -387,7 +407,7 @@ function renderNudge(){
   if(gap===null){t="Welcome. No history needed.";b="Log anything you've done lately — or pick a two-minute pattern breaker below. The app starts wherever you are.";}
   else if(gap>=3){const idea=BREAKERS[Math.floor(Math.random()*BREAKERS.length)];
     t="Quiet stretch — let's break the pattern, tiny.";b="No lecture. "+idea;}
-  else if(gap>=1){t="Yesterday-ish counts. Today can be small.";b=[,"Strength A day works well after a run day: goblet squats, RDLs, carries, then wall angels.","Easy run or Peloton — conversational effort, nothing heroic.","Mid-week is a good dance or Peloton day.","Chair-push practice? Flat loop, tall shoulders, easy effort.","Rest is a valid log. Or a 5-minute posture set.","Long-ish easy run if the morning allows.","Strength B: press, supported rows, suitcase carries, a few heel drops."][dow]||"Pick whatever sounds least annoying and log it.";}
+  else if(gap>=1){t="Yesterday-ish counts. Today can be small.";b=[,"Strength A day works well after a run day: goblet squats, RDLs, carries, then wall angels.","Easy run or Peloton — conversational effort, nothing heroic.","Mid-week is a good dance or Peloton day.","Yoga or a long stretch session — extension and hips, skip the deep forward folds.","Rest is a valid log. Or a 5-minute posture set.","Long-ish easy run if the morning allows.","Strength B: press, supported rows, suitcase carries, a few heel drops."][dow]||"Pick whatever sounds least annoying and log it.";}
   else{t="You already moved today.";b="If you're back for more: posture set, or just enjoy having logged it. Nothing else required.";}
   $("nudgeTitle").textContent=t;$("nudgeBody").textContent=b;
 }
@@ -427,7 +447,7 @@ function renderPatterns(){
       const top=Object.entries(ft).sort((a,b)=>b[1]-a[1])[0][0];
       const lbl=(TYPES.find(t=>t.id===top)||{}).label||top;
       obs.push(`When you log "${lbl}", you tend to feel good afterward. That's data, not coincidence.`);}
-    const runs=move.filter(l=>l.min&&l.miles&&(l.type==="run"||l.type==="chairrun"));
+    const runs=move.filter(l=>l.min&&l.miles&&l.type==="run");
     if(runs.length>=2){const avg=runs.reduce((s,l)=>s+l.min/l.miles,0)/runs.length;
       obs.push(`Recent running pace averages ${fmtPace(avg)}. Goal race pace is 9:30/mi with the chair — easy days are supposed to be slower than that.`);}
     const g=daysSinceLast();
