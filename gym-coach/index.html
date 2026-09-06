@@ -256,14 +256,14 @@ const BREAKERS=[
  "Peloton, 10 minutes, any class, quit guilt-free when it ends.",
  "Text Diego a training-day meme, then do 10 step-ups on the stairs.",
 ];
-const PLAN_TODAY=[
- ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights."],
- ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights."],
- ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right."],
- ["Peloton or dance — your pick","Whatever sounds fun. Both count the same."],
- ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls."],
- ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it."],
- ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon."]];
+const PLAN_TODAY=[ // [title, detail, evening/indoor swap]
+ ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights.","Dumbbells at home work at any hour — this one has no weather."],
+ ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights.","Dumbbells at home work at any hour — this one has no weather."],
+ ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right.","Late, dark, or raining? Peloton 20–30 min is this run's indoor twin — same credit."],
+ ["Peloton or dance — your pick","Whatever sounds fun. Both count the same.","Already indoor-proof. Even one song of dancing closes the day."],
+ ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls.","Works in pajamas at 9pm. No excuses needed, and none asked for."],
+ ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it.","Evening is exactly when this one shines."],
+ ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon.","Late or raining? Don't force it: Peloton 30–45 min tonight, run tomorrow morning instead of strength. Swapping days costs nothing."]];
 const RACE=new Date("2027-05-02T06:30:00");
 let logs=[], selType="run", selFeel="ok", db=null;
 
@@ -427,9 +427,10 @@ function daysSinceLast(){
 }
 
 function renderNudge(){
-  const gap=daysSinceLast(),dow=new Date().getDay(),[t,detail]=PLAN_TODAY[dow];
+  const now=new Date(),gap=daysSinceLast(),dow=now.getDay(),[t,detail,evening]=PLAN_TODAY[dow];
   const doneToday=logs.some(l=>l.date===todayStr());
   let b=detail;
+  if(!doneToday&&now.getHours()>=17)b=detail+" — "+evening;
   if(doneToday)b="Already logged today — the plan is satisfied. Anything more is extra, not owed.";
   else if(gap!==null&&gap>=3){b=`Quiet for ${gap} days — that just means today shrinks, not that you owe makeup work. Do a two-minute Plan B below, or the real thing if energy allows. Either one counts as back on plan.`;
     const bx=$("breakersBox");if(bx)bx.open=true;}
