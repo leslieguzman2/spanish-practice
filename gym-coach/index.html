@@ -259,11 +259,14 @@ const BREAKERS=[
 const PLAN_TODAY=[ // [title, detail, evening/indoor swap]
  ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights.","Dumbbells at home work at any hour — this one has no weather."],
  ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights.","Dumbbells at home work at any hour — this one has no weather."],
- ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right.","Late, dark, or raining? Peloton 20–30 min is this run's indoor twin — same credit."],
+ ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right. Night running is fine wherever there's light.","Raining? Peloton 20–30 min is this run's indoor twin — same credit."],
  ["Peloton or dance — your pick","Whatever sounds fun. Both count the same.","Already indoor-proof. Even one song of dancing closes the day."],
  ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls.","Works in pajamas at 9pm. No excuses needed, and none asked for."],
  ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it.","Evening is exactly when this one shines."],
- ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon.","Late or raining? Don't force it: Peloton 30–45 min tonight, run tomorrow morning instead of strength. Swapping days costs nothing."]];
+ ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon. Night is fine with light.","Raining? Don't force it: Peloton 30–45 min tonight, run tomorrow instead of strength. Swapping days costs nothing."]];
+const ONRAMP={ // shown on run days until a few runs are logged
+ 2:["Run/walk, 20 min","2 min easy jog, 1 min walk, repeat. This builds the tendons and bones before the mileage — skipping this step is how runners get hurt. Night is fine with light.","Raining? Peloton 15–20 min gets the same credit."],
+ 6:["Run/walk, 25–30 min","3 min easy jog, 1 min walk, repeat — or 2 easy miles if that's already comfortable. The 4–6 mi version unlocks as runs accumulate. Night is fine with light.","Raining? Peloton 25–30 min tonight, try the run another day. Swapping costs nothing."]};
 const RACE=new Date("2027-05-02T06:30:00");
 let logs=[], selType="run", selFeel="ok", db=null;
 
@@ -427,7 +430,9 @@ function daysSinceLast(){
 }
 
 function renderNudge(){
-  const now=new Date(),gap=daysSinceLast(),dow=now.getDay(),[t,detail,evening]=PLAN_TODAY[dow];
+  const now=new Date(),gap=daysSinceLast(),dow=now.getDay();
+  const runCount=logs.filter(l=>l.type==="run").length;
+  const [t,detail,evening]=(ONRAMP[dow]&&runCount<4)?ONRAMP[dow]:PLAN_TODAY[dow];
   const doneToday=logs.some(l=>l.date===todayStr());
   let b=detail;
   if(!doneToday&&now.getHours()>=17)b=detail+" — "+evening;
