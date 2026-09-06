@@ -322,12 +322,26 @@ async function delLog(id){
 }
 
 // ---- strength exercise memory ----
-function lastFor(name){ // most recent logged set of this exercise
+function lastFor(name){ // most recent logged set of this exercise, with that day's feel
   name=name.trim().toLowerCase();if(!name)return null;
   for(const l of logs){if(l.type!=="strength"||!l.exercises)continue;
     const ex=l.exercises.find(e=>e.name.toLowerCase()===name);
-    if(ex)return {...ex,date:l.date};}
+    if(ex)return {...ex,date:l.date,feel:l.feel};}
   return null;
+}
+function histFor(name){ // all logged instances, newest first
+  name=name.trim().toLowerCase();const out=[];
+  for(const l of logs){if(l.type!=="strength"||!l.exercises)continue;
+    const ex=l.exercises.find(e=>e.name.toLowerCase()===name);
+    if(ex)out.push({...ex,date:l.date,feel:l.feel});}
+  return out;
+}
+function loadHint(name){ // data-driven suggestion, phrased as an option
+  const h=histFor(name);if(!h.length||!h[0].lb)return "";
+  if(h.length>=2&&h[0].lb===h[1].lb&&(h[0].feel==="good"||h[0].feel==="great"))
+    return ` · felt strong at ${h[0].lb} lb twice — +2.5–5 lb is yours if you want it`;
+  if(h[0].feel==="rough")return " · was rough last time — same or lighter is real training too";
+  return "";
 }
 function knownExNames(){
   const s=new Set();
@@ -346,7 +360,7 @@ function addExRow(pre){
     <span class="last"></span>`;
   const [name,s,rep,w]=r.querySelectorAll("input"),last=r.querySelector(".last");
   name.onchange=()=>{const p=lastFor(name.value);
-    last.textContent=p?`last time (${p.date}): ${p.sets||"?"}×${p.reps||"?"} @ ${p.lb||"bw"}${p.lb?" lb":""}`:"";};
+    last.textContent=p?`last time (${p.date}): ${p.sets||"?"}×${p.reps||"?"} @ ${p.lb||"bw"}${p.lb?" lb":""}${loadHint(name.value)}`:"";};
   r.querySelector(".del").onclick=()=>r.remove();
   if(pre){name.value=pre.name;s.value=pre.sets||"";rep.value=pre.reps||"";w.value=pre.lb||"";name.onchange();}
   $("exRows").appendChild(r);refreshDatalist();
@@ -460,6 +474,20 @@ function renderPatterns(){
     const runs=move.filter(l=>l.min&&l.miles&&l.type==="run");
     if(runs.length>=2){const avg=runs.reduce((s,l)=>s+l.min/l.miles,0)/runs.length;
       obs.push(`Recent running pace averages ${fmtPace(avg)}. Goal race pace is 9:30/mi with the chair — easy days are supposed to be slower than that.`);}
+    if(runs.length>=6){ // pace trend: newest 3 vs the 3 before
+      const p=l=>l.min/l.miles,recent=runs.slice(0,3).reduce((s,l)=>s+p(l),0)/3,earlier=runs.slice(3,6).reduce((s,l)=>s+p(l),0)/3,d=earlier-recent;
+      if(d>0.15)obs.push(`Your last three runs average ${fmtPace(recent)} vs ${fmtPace(earlier)} before — about ${Math.round(d*60)} sec/mi faster at the same kind of effort. That's fitness, measured.`);
+      else if(d<-0.3)obs.push(`Recent runs are a bit slower than before. Usually that means tired, not unfit — a lighter week is a legitimate coaching call.`);}
+    // strength progression per exercise
+    const names=new Set();logs.forEach(l=>(l.exercises||[]).forEach(e=>names.add(e.name)));
+    const gains=[];
+    names.forEach(n=>{const h=histFor(n).filter(x=>x.lb);
+      if(h.length>=2&&h[0].lb>h[h.length-1].lb)gains.push(`${n} ${h[h.length-1].lb}→${h[0].lb} lb`);});
+    if(gains.length)obs.push(`Weights moving up: ${gains.join(", ")}. For osteoporosis this is the headline number — progressive load is what builds bone.`);
+    // how it's feeling overall → adapt
+    const recent10=move.slice(0,10),roughShare=recent10.filter(l=>l.feel==="rough").length/Math.max(1,recent10.length);
+    if(recent10.length>=5&&roughShare>=0.4)obs.push(`${Math.round(roughShare*100)}% of your recent sessions felt rough. The plan should bend before you do: take an easier week — shorter runs, lighter weights, more dance. Then reassess.`);
+    else if(recent10.length>=5&&recent10.filter(l=>l.feel==="great").length>=3)obs.push(`A lot of recent sessions felt strong. If you're feeling ambitious, this is the window to nudge weights or add a few minutes — the data says you can absorb it.`);
     const g=daysSinceLast();
     if(g>=3)obs.push(`It's been ${g} days since a logged movement. Gaps aren't failures — they're just where a tiny pattern breaker fits.`);
   } else {
