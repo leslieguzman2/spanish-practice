@@ -256,6 +256,14 @@ const BREAKERS=[
  "Peloton, 10 minutes, any class, quit guilt-free when it ends.",
  "Text Diego a training-day meme, then do 10 step-ups on the stairs.",
 ];
+const PLAN_TODAY=[
+ ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights."],
+ ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights."],
+ ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right."],
+ ["Peloton or dance — your pick","Whatever sounds fun. Both count the same."],
+ ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls."],
+ ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it."],
+ ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon."]];
 const RACE=new Date("2027-05-02T06:30:00");
 let logs=[], selType="run", selFeel="ok", db=null;
 
@@ -297,7 +305,7 @@ $("fMin").oninput=paceCalc;$("fMiles").oninput=paceCalc;
 // storage: db capability with localStorage fallback
 function lsLoad(){try{logs=JSON.parse(localStorage.getItem("mp_logs")||"[]")}catch(e){logs=[]}}
 function lsSave(){try{localStorage.setItem("mp_logs",JSON.stringify(logs))}catch(e){}}
-lsLoad();renderAll();
+lsLoad();
 
 (async()=>{
   try{
@@ -418,14 +426,6 @@ function daysSinceLast(){
   return Math.floor((Date.now()-move[0].ts)/864e5);
 }
 
-const PLAN_TODAY=[
- ["Strength B + something with the kids","Press, supported rows, suitcase carries, heel drops. Tap the button — it loads with your last weights."],
- ["Strength A + posture set","Goblet squats, RDLs, carries, step-ups, wall angels. Tap the button — it loads with your last weights."],
- ["Easy run, 30–40 min","Conversational pace. Slower than feels productive is exactly right."],
- ["Peloton or dance — your pick","Whatever sounds fun. Both count the same."],
- ["Yoga / stretch, 20–30 min","Extension and hips. Sub out any deep forward fold the instructor calls."],
- ["Rest, or a 10-minute posture set","Rest is part of the plan, not a deviation. Log it."],
- ["Long-ish easy run, 4–6 mi","Easy effort. This is the run that builds the half marathon."]];
 function renderNudge(){
   const gap=daysSinceLast(),dow=new Date().getDay(),[t,detail]=PLAN_TODAY[dow];
   const doneToday=logs.some(l=>l.date===todayStr());
@@ -479,9 +479,9 @@ function renderPatterns(){
       if(d>0.15)obs.push(`Your last three runs average ${fmtPace(recent)} vs ${fmtPace(earlier)} before — about ${Math.round(d*60)} sec/mi faster at the same kind of effort. That's fitness, measured.`);
       else if(d<-0.3)obs.push(`Recent runs are a bit slower than before. Usually that means tired, not unfit — a lighter week is a legitimate coaching call.`);}
     // strength progression per exercise
-    const names=new Set();logs.forEach(l=>(l.exercises||[]).forEach(e=>names.add(e.name)));
+    const exSet=new Set();logs.forEach(l=>(l.exercises||[]).forEach(e=>exSet.add(e.name)));
     const gains=[];
-    names.forEach(n=>{const h=histFor(n).filter(x=>x.lb);
+    exSet.forEach(n=>{const h=histFor(n).filter(x=>x.lb);
       if(h.length>=2&&h[0].lb>h[h.length-1].lb)gains.push(`${n} ${h[h.length-1].lb}→${h[0].lb} lb`);});
     if(gains.length)obs.push(`Weights moving up: ${gains.join(", ")}. For osteoporosis this is the headline number — progressive load is what builds bone.`);
     // how it's feeling overall → adapt
@@ -505,4 +505,5 @@ function drawBars(){
 
 function renderAll(){renderNudge();renderBreakers();renderHistory();refreshDatalist();
   if(!$("tab-patterns").classList.contains("hide"))renderPatterns();}
+renderAll();
 </script>
